@@ -19,6 +19,7 @@
 #include "../kmc_api/mmer.h"
 #include <stdio.h>
 #include <vector>
+#include <iostream>
 #include "small_k_buf.h"
 #include "bam_utils.h"
 
@@ -74,7 +75,24 @@ public:
 	void Complete();
 	inline void GetTotal(uint64 &_n_reads);
 	inline uint64 GetTotalKmers();
+	inline uint64_t hash64(uint64_t key, uint64_t mask); // Kush added this
+
+
 };
+
+//----------------------------------------------------------------------------------
+// Added this function which returns a hash for a key
+
+uint64_t CSplitter::hash64(uint64_t key, uint64_t mask) {
+	key = (~key + (key << 21)) & mask; // key = (key << 21) - key - 1;
+	key = key ^ key >> 24;
+	key = ((key + (key << 3)) + (key << 8)) & mask; // key * 265
+	key = key ^ key >> 14;
+	key = ((key + (key << 2)) + (key << 4)) & mask; // key * 21
+	key = key ^ key >> 28;
+	key = (key + (key << 31)) & mask;
+	return key;
+}
 
 //----------------------------------------------------------------------------------
 // Return the number of reads processed by splitter
