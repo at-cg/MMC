@@ -1,23 +1,12 @@
-KMC
-=
-[![GitHub downloads](https://img.shields.io/github/downloads/refresh-bio/kmc/total.svg?style=flag&label=GitHub%20downloads)](https://github.com/refresh-bio/KMC/releases)
-[![Bioconda downloads](https://img.shields.io/conda/dn/bioconda/kmc.svg?style=flag&label=Bioconda%20downloads)](https://anaconda.org/bioconda/kmc)
-
-KMC is a disk-based programm for counting k-mers from (possibly gzipped) FASTQ/FASTA files.
-The homepage of the KMC project is http://sun.aei.polsl.pl/kmc
-
-For accessing k-mers stored in database produced by KMC there is an API (kmc_api directory). Note that for KMC versions 0.x and 1.x dababase format differs from produced by KMC version 2.x. From version 2.2.0 API is unified for both formats and all new features/bug fixes are present only for 2.x branch (standalone API for older KMC version is not longer under development, so new version of API  should be used even for databases produced by older KMC version).
+MMC
+MMC is a disk-based programm for counting (w,k)-minimizers from (possibly gzipped) FASTQ/FASTA files.
 
 Installation
 =
-The following libraries come with KMC in a binary (64-bit compiled for x86 platform) form.
-If your system needs other binary formats, you should put the following libraries in kmer_counter/libs:
-* libbzip2 - for support for bzip2-compressed input FASTQ/FASTA files (http://www.bzip.org/)
-* zlib - for support for gzip-compressed input FASTQ/FASTA files (http://www.zlib.net/)
-
-The following libraries come with KMC in a source coude form.
- * pybind11 - used to create python wrapper of KMC API (https://github.com/pybind/pybind11)
-
+```sh
+git clone https://github.com/at-cg/MMC.git
+cd MMC
+```
 If needed, you can also redefine maximal length of k-mer, which is 256 in the current version.
 
 Note: KMC is highly optimized and spends only as many bytes for k-mer (rounded up to 8) as
@@ -25,7 +14,7 @@ necessary, so using large values of MAX_K does not affect the KMC performance fo
 
 Some parts of KMC use C++14 features, so you need a compatible C++ compiler, e.g., gcc 4.9+ or clang 3.4+
 
-After that, you can run make to compile kmc and kmc_dump applications.
+After that, you can run ```make``` to compile kmc and kmc_dump applications.
 
 ##### Additional infromation for MAC OS installation
 
