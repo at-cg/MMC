@@ -15,7 +15,7 @@ necessary, so using large values of MAX_K does not affect the KMC performance fo
 
 Some parts of MMC use C++14 features, so you need a compatible C++ compiler, e.g., gcc 4.9+ or clang 3.4+
 
-After that, you can run ```make``` to compile kmc and kmc_dump applications.
+After that, you can run ```make``` to compile mmc and mmc_dump applications.
 
 Directory structure
 =
