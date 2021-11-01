@@ -80,3 +80,6 @@ bin/
 
 # Editor backup files
 *~
+
+#extra folder that comes after compling only
+include/
