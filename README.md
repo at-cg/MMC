@@ -30,8 +30,8 @@ Binaries
 =
 After compilation you will obtain two binaries:
 * bin/mmc - the main program for counting k-mer occurrences
-* bin/kmc_dump - the program listing k-mers in a database produced by mmc
-* bin/kmc_tools - the program allowing to manipulate mmc databases (set operations, transformations, etc.)
+* bin/mmc_dump - the program listing k-mers in a database produced by mmc
+* bin/mmc_tools - the program allowing to manipulate mmc databases (set operations, transformations, etc.)
 
 
 License
