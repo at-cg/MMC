@@ -134,8 +134,8 @@ int main(int argc, char* argv[])
 // -------------------------------------------------------------------------
 void print_info(void)
 {
-	std::cout << "KMC dump ver. " << KMC_VER << " (" << KMC_DATE << ")\n"
-			  << "\nUsage:\nkmc_dump [options] <kmc_database> <output_file>\n"
+	std::cout << "MMC dump ver. " << KMC_VER << " (" << KMC_DATE << ")\n"
+			  << "\nUsage:\nmmc_dump [options] <kmc_database> <output_file>\n"
 			  << "Parameters:\n"
 			  << "<kmc_database> - kmer_counter's output\n"
 			  << "Options:\n"

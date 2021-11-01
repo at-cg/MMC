@@ -23,9 +23,9 @@ struct Params
 // Show execution options of the software
 void usage()
 {
-	cout << "K-Mer Counter (KMC) ver. " << KMC::CfgConsts::kmc_ver << " (" << KMC::CfgConsts::kmc_date << ")\n"
-		<< "Usage:\n kmc [options] <input_file_name> <output_file_name> <working_directory>\n"
-		<< " kmc [options] <@input_file_names> <output_file_name> <working_directory>\n"
+	cout << "MiniMizer Counter (MMC) ver. " << KMC::CfgConsts::kmc_ver << " (" << KMC::CfgConsts::kmc_date << ")\n"
+		<< "Usage:\n mmc [options] <input_file_name> <output_file_name> <working_directory>\n"
+		<< " mmc [options] <@input_file_names> <output_file_name> <working_directory>\n"
 		<< "Parameters:\n"
 		<< "  input_file_name - single file in specified (-f switch) format (gziped or not)\n"
 		<< "  @input_file_names - file name with list of input files in specified (-f switch) format (gziped or not)\n"
@@ -37,9 +37,9 @@ void usage()
 		<< "  -hc - count homopolymer compressed k-mers (approximate and experimental)\n"
 		<< "  -p<par> - signature length (5, 6, 7, 8, 9, 10, 11); default: 9\n"
 		<< "  -f<a/q/m/bam/kmc> - input in FASTA format (-fa), FASTQ format (-fq), multi FASTA (-fm) or BAM (-fbam) or KMC(-fkmc); default: FASTQ\n"
-		<< "  -ci<value> - exclude k-mers occurring less than <value> times (default: 2)\n"
+		<< "  -ci<value> - exclude minimizers occurring less than <value> times (default: 2)\n"
 		<< "  -cs<value> - maximal value of a counter (default: 255)\n"
-		<< "  -cx<value> - exclude k-mers occurring more of than <value> times (default: 1e9)\n"
+		<< "  -cx<value> - exclude minimizers occurring more of than <value> times (default: 1e9)\n"
 		<< "  -b - turn off transformation of k-mers into canonical form\n"
 		<< "  -r - turn on RAM-only mode \n"
 		<< "  -n<value> - number of bins \n"
@@ -51,11 +51,11 @@ void usage()
 		<< "  -w - without output\n"
 		<< "  -o<kmc/kff> - output in KMC of KFF format; default: KMC\n"
 		<< "  -hp - hide percentage progress (default: false)\n"
-		<< "  -e - only estimate histogram of k-mers occurrences instead of exact k-mer counting\n"
+		//<< "  -e - only estimate histogram of k-mers occurrences instead of exact k-mer counting\n"
 		<< "  --opt-out-size - optimize output database size (may increase running time)\n"
 		<< "Example:\n"
-		<< "kmc -k27 -m24 NA19238.fastq NA.res /data/kmc_tmp_dir/\n"
-		<< "kmc -k27 -m24 @files.lst NA.res /data/kmc_tmp_dir/\n";
+		<< "mmc -k27 -m24 NA19238.fastq NA.res /data/kmc_tmp_dir/\n"
+		<< "mmc -k27 -m24 @files.lst NA.res /data/kmc_tmp_dir/\n";
 }
 
 //----------------------------------------------------------------------------------
@@ -213,11 +213,11 @@ bool parse_parameters(int argc, char* argv[], Params& params)
 			if (cliParams.jsonSummaryFileName == "")
 				cerr << "Warning: file name for json summary file missed (-j switch)\n";
 		}
-		else if (strncmp(argv[i], "-e", 2) == 0)
-		{
-			was_e = true;
-			stage1Params.SetEstimateHistogramCfg(KMC::EstimateHistogramCfg::ONLY_ESTIMATE);
-		}
+		//else if (strncmp(argv[i], "-e", 2) == 0)
+		//{
+		//	was_e = true;
+		//	stage1Params.SetEstimateHistogramCfg(KMC::EstimateHistogramCfg::ONLY_ESTIMATE);
+		//}
 		else if (strcmp(argv[i], "--opt-out-size") == 0)
 		{
 			was_opt_out_size = true;

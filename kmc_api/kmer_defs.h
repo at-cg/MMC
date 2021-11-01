@@ -14,8 +14,8 @@
 
 #include <cinttypes>
 
-#define KMC_VER		"3.1.1"
-#define KMC_DATE	"2019-05-19"
+#define KMC_VER		"1.0.0"
+#define KMC_DATE	"04-11-2021"
 
 #ifndef MIN
 #define MIN(x,y)	((x) < (y) ? (x) : (y))

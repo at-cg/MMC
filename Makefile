@@ -127,15 +127,15 @@ $(LIB_KMC_CORE): $(KMC_CORE_OBJS) $(RADULS_OBJS) $(KMC_API_OBJS) $(KFF_OBJS)
 
 kmc: $(KMC_CLI_OBJS) $(LIB_KMC_CORE)
 	-mkdir -p $(OUT_BIN_DIR)
-	$(CC) $(CLINK) -o $(OUT_BIN_DIR)/$@ $^ $(KMC_LIBS)
+	$(CC) $(CLINK) -o $(OUT_BIN_DIR)/mmc $^ $(KMC_LIBS)
 
 kmc_dump: $(KMC_DUMP_OBJS) $(KMC_API_OBJS)
 	-mkdir -p $(OUT_BIN_DIR)
-	$(CC) $(CLINK) -o $(OUT_BIN_DIR)/$@ $^
+	$(CC) $(CLINK) -o $(OUT_BIN_DIR)/mmc_dump $^
 
 kmc_tools: $(KMC_TOOLS_OBJS) $(KMC_API_OBJS) $(KFF_OBJS)
 	-mkdir -p $(OUT_BIN_DIR)
-	$(CC) $(CLINK) -o $(OUT_BIN_DIR)/$@ $^ $(KMC_TOOLS_LIBS)
+	$(CC) $(CLINK) -o $(OUT_BIN_DIR)/mmc_tools $^ $(KMC_TOOLS_LIBS)
 
 $(PY_KMC_API_DIR)/%.o: $(KMC_API_DIR)/%.cpp
 	$(CC) -c -fPIC -Wall -O3 -m64 -std=c++14 $^ -o $@
