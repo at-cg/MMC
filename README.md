@@ -1,6 +1,6 @@
 MMC
 =
-MMC is a disk-based programm for counting (w,k)-minimizers from (possibly gzipped) FASTQ/FASTA files. This program has been built on top of [KMC3](https://github.com/refresh-bio).
+MMC is a disk-based programm for counting (w,k)-minimizers from (possibly gzipped) FASTQ/FASTA files. This program has been built on top of [KMC3](https://github.com/refresh-bio/KMC).
 
 Installation
 =
