@@ -19,6 +19,17 @@ After compilation you will obtain two binaries:
 * bin/mmc_dump - the program listing minimizers in a database produced by mmc
 * bin/mmc_tools - the program allowing to manipulate mmc databases (set operations, transformations, etc.)
 
+Script
+=
+The scripts folder contains:
+* bc_script.cpp - the script to compute Bray-Curtis dissimilarity between two metagenomes.
+
+Usage: 
+```sh
+g++ bcscript.cpp -o main && ./main <input1> <input2>
+```
+
+
 License
 =
 * MMC software distributed under GNU GPL 3 licence.
