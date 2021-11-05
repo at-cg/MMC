@@ -410,16 +410,16 @@ void print_summary(
 	else
 		cout << "Tmp size : " << stage1Results.tmpSize / 1000000 << "MB\n";
 	cout << "\nStats:\n"
-		<< "   No. of k-mers below min. threshold : " << setw(12) << stage2Results.nBelowCutoffMin << "\n"
-		<< "   No. of k-mers above max. threshold : " << setw(12) << stage2Results.nAboveCutoffMax << "\n"
-		<< "   No. of unique k-mers               : " << setw(12) << stage2Results.nUniqueKmers << "\n"
-		<< "   No. of unique counted k-mers       : " << setw(12) << stage2Results.nUniqueKmers - stage2Results.nBelowCutoffMin - stage2Results.nAboveCutoffMax << "\n"
-		<< "   Total no. of k-mers                : " << setw(12) << stage2Results.nTotalKmers << "\n";
+		<< "   No. of minimizers below min. threshold : " << setw(12) << stage2Results.nBelowCutoffMin << "\n"
+		<< "   No. of minimizers above max. threshold : " << setw(12) << stage2Results.nAboveCutoffMax << "\n"
+		<< "   No. of unique minimizers               : " << setw(12) << stage2Results.nUniqueKmers << "\n"
+		<< "   No. of unique counted minimizers       : " << setw(12) << stage2Results.nUniqueKmers - stage2Results.nBelowCutoffMin - stage2Results.nAboveCutoffMax << "\n"
+		<< "   Total no. of minimizers                : " << setw(12) << stage2Results.nTotalKmers << "\n";
 	if (stage1Params.GetInputFileType() != KMC::InputFileType::MULTILINE_FASTA)
-		cout << "   Total no. of reads                 : " << setw(12) << stage1Results.nSeqences << "\n";
+		cout << "   Total no. of reads                     : " << setw(12) << stage1Results.nSeqences << "\n";
 	else
-		cout << "   Total no. of sequences             : " << setw(12) << stage1Results.nSeqences << "\n";
-	cout << "   Total no. of super-k-mers          : " << setw(12) << stage1Results.nTotalSuperKmers << "\n";
+		cout << "   Total no. of sequences                 : " << setw(12) << stage1Results.nSeqences << "\n";
+	//cout << "   Total no. of super-k-mers          : " << setw(12) << stage1Results.nTotalSuperKmers << "\n";
 }
 
 //----------------------------------------------------------------------------------
