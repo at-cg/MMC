@@ -113,6 +113,7 @@ template <unsigned SIZE> CKMC<SIZE>::CKMC()
 	Params.n_readers     = 1;
 	Params.n_splitters   = 1;
 	Params.n_sorters     = 1;
+	Params.window_len 	 = 1;
 }
 
 //----------------------------------------------------------------------------------
@@ -127,6 +128,7 @@ template <unsigned SIZE> void CKMC<SIZE>::SetParamsStage1(const KMC::Stage1Param
 	Params.input_file_names = stage1Params.GetInputFiles();
 	Params.working_directory = stage1Params.GetTmpPath();
 	Params.kmer_len = stage1Params.GetKmerLen();
+	Params.window_len = stage1Params.GetWindowLen(); // Souvadra's addition
 	Params.file_type = stage1Params.GetInputFileType();
 	Params.n_bins = stage1Params.GetNBins();
 

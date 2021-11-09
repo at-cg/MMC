@@ -116,6 +116,7 @@ namespace KMC
 		std::vector<std::string> inputFiles;
 		std::string tmpPath = ".";
 		uint32_t kmerLen = 25;
+		uint32_t windowLen = 1;
 		uint32_t nThreads = std::thread::hardware_concurrency();
 		uint32_t maxRamGB = 12;
 		uint32_t signatureLen = 9;		
@@ -138,6 +139,7 @@ namespace KMC
 		Stage1Params& SetInputFiles(const std::vector<std::string>& inputFiles);
 		Stage1Params& SetTmpPath(const std::string& tmpPath);
 		Stage1Params& SetKmerLen(uint32_t kmerLen);
+		Stage1Params& SetWindowLen(uint32_t windowLen); // Souvadra's addition
 		Stage1Params& SetNThreads(uint32_t nThreads);
 		Stage1Params& SetMaxRamGB(uint32_t maxRamGB);
 		Stage1Params& SetSignatureLen(uint32_t signatureLen);		
@@ -160,6 +162,7 @@ namespace KMC
 		const std::vector<std::string>& GetInputFiles() const noexcept { return inputFiles; }
 		const std::string& GetTmpPath() const noexcept { return tmpPath; }
 		uint32_t  GetKmerLen() const noexcept { return kmerLen; }
+		uint32_t GetWindowLen() const noexcept {return windowLen; } // Souvadra's addition
 		uint32_t GetNThreads() const noexcept { return nThreads; }
 		uint32_t GetMaxRamGB() const noexcept { return maxRamGB; }
 		uint32_t GetSignatureLen() const noexcept { return signatureLen; }
