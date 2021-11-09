@@ -46,6 +46,7 @@ class CSplitter
 	uint32_t curr_read_len = 0;
 
 	uint32 kmer_len;
+	uint32 window_len; // Souvadra's addition
 	//uint32 prefix_len;
 	uint32 signature_len;
 	uint32 n_bins;	

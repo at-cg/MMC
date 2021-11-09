@@ -29,6 +29,7 @@ CSplitter::CSplitter(CKMCParams &Params, CKMCQueues &Queues)
 	bin_part_queue = Queues.bpq.get();
 	pmm_reads = Queues.pmm_reads.get();
 	kmer_len = Params.kmer_len;
+	window_len = Params.window_len; // Souvadra's addition
 	signature_len = Params.signature_len;
 
 	mem_part_pmm_bins = Params.mem_part_pmm_bins;
@@ -446,7 +447,7 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 	uint32 i;
 
 	// ADDED VARIABLES
-	uint32_t w_len = kmer_len; // Window length. Using w=k for now
+	uint32_t w_len = window_len; // Window length. Using w=k for now
 	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
 	uint32_t min_flag = 0; // checks if a minimizer has already been computed in an iteration
 	uint64_t kmer_int = 0; // Integer representation of a kmer
@@ -675,7 +676,7 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	uint32 i;
 
 	// ADDED VARIABLES
-	uint32_t w_len = kmer_len; // Window length. Using w=k for now
+	uint32_t w_len = window_len; // Window length. Using w=k for now
 	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
 	uint32_t min_flag = 0; // checks if a minimizer has already been computed in an iteration
 	uint64_t kmer_int = 0; // Integer representation of a kmer
