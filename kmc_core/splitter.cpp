@@ -22,7 +22,7 @@ uint32 CSplitter::MAX_LINE_SIZE = 1 << 16;
 // Assigns queues
 CSplitter::CSplitter(CKMCParams &Params, CKMCQueues &Queues)
 {
-	std::cout << "line 25 of splitter.cpp is running" << std::endl; // Souvadra
+	////std::cout << "line 25 of splitter.cpp is running" << std::endl; // Souvadra
 	//mm = Queues.mm;
 	file_type = Params.file_type;
 	both_strands = Params.both_strands;
@@ -449,7 +449,7 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 
 	// ADDED VARIABLES
 	uint32_t w_len = window_len; // Window length. Using w=k for now
-	std::cout << "line 451 @splitter.cpp | w_len = " << w_len << std::endl; // Souvadra's addition
+	//std::cout << "line 451 @splitter.cpp | w_len = " << w_len << std::endl; // Souvadra's addition
 	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
 	uint32_t min_flag = 0; // checks if a minimizer has already been computed in an iteration
 	uint64_t kmer_int = 0; // Integer representation of a kmer
@@ -679,7 +679,7 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 
 	// ADDED VARIABLES
 	uint32_t w_len = window_len; // Window length. Using w=k for now
-	std::cout << "line 681 @splitter.cpp | w_len = " << w_len << std::endl; // Souvadra's addition
+	//std::cout << "line 681 @splitter.cpp | w_len = " << w_len << std::endl; // Souvadra's addition
 	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
 	uint32_t min_flag = 0; // checks if a minimizer has already been computed in an iteration
 	uint64_t kmer_int = 0; // Integer representation of a kmer

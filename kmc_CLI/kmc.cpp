@@ -131,7 +131,7 @@ bool parse_parameters(int argc, char* argv[], Params& params)
 		else if (strncmp(argv[i], "-wv", 3) == 0) 
 		{
 			stage1Params.SetWindowLen(atoi(&argv[i][3]));
-			printf("window length is %d \n", atoi(&argv[i][3])); // Souvadra
+			//printf("window length is %d \n", atoi(&argv[i][3])); // Souvadra
 		}
 		// Memory limit
 		else if (strncmp(argv[i], "-m", 2) == 0)

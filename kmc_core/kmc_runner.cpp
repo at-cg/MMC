@@ -206,7 +206,6 @@ namespace KMC
 			throw std::runtime_error(err_msg.str());;
 		}
 		this->windowLen = windowLen;
-		printf("line 209 @ kmc_runner.cpp is working fine \n");
 		return *this;
 	}
 	Stage1Params& Stage1Params::SetNThreads(uint32_t nThreads)
