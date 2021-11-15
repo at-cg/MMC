@@ -4,7 +4,8 @@ MMC is a open-source program for disk-based counting of (w,k)-minimizers from (p
 
 Benchmark
 =
-
+![image](https://user-images.githubusercontent.com/40889593/141755297-d2ff9e99-7d01-4c3c-9541-fbd316e2168c.png)
+We have benchmarked MMC with two of the most common tools for counting all k-mers. We can clearly observe from the above plots that counting (w,k)-minimizers using MMC is around 2x faster than KMC3 and 10x faster than Jelllyfish2 (JF2). MMC is also 2x space efficient compared to KMC3. But, the best part about using MMC is that is only samples minimizers, which results in subsequent downstream operations an order of magnitude faster in minimizer-space compared to the classical all k-mer counterparts.
 
 Installation
 =
