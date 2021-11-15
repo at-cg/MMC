@@ -4,7 +4,7 @@ MMC is a open-source program for disk-based counting of (w,k)-minimizers from (p
 
 Benchmark
 =
-
+![image](https://user-images.githubusercontent.com/40889593/141755297-d2ff9e99-7d01-4c3c-9541-fbd316e2168c.png)
 
 Installation
 =
