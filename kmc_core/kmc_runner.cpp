@@ -199,10 +199,10 @@ namespace KMC
 	}
 	Stage1Params& Stage1Params::SetWindowLen(uint32_t windowLen) // Souvadra's addition
 	{
-		if (windowLen < 1 || windowLen > 250) // Randomly put 250 
+		if (windowLen < 1) 
 		{
 			std::ostringstream err_msg;
-			err_msg << "Wrong parameter: window must from range 1 to 250"; // need to generalize later
+			err_msg << "Wrong parameter: window must be greater than 0"; // need to generalize later
 			throw std::runtime_error(err_msg.str());;
 		}
 		this->windowLen = windowLen;
