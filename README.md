@@ -1,6 +1,6 @@
 MMC
 =
-MMC is an open-source program for disk-based counting of (w,k)-minimizers from (possibly gzipped) FASTQ/FASTA files. Given parameters k and w (default w = k), MMC samples the minimizers and give the statistics of their count in an efficient manner. Many applications (such as, GWAS, BC-dissimilarity computation, de novo Genome Size Estimation ...) that requires the count of all the k-mers in a given sequencing file, can be performed using a fraction of time and memory using only the minimizer statistics, which MMC provides the user. This program has been built on top of [KMC3](https://github.com/refresh-bio/KMC).
+MMC is an open-source program for disk-based counting of (w,k)-minimizers from (possibly gzipped) FASTQ/FASTA files. Given parameters k and w (default w = k), MMC samples the minimizers and gives the statistics of their count in an fast and memory efficient manner. Many applications (such as, GWAS, BC-dissimilarity computation, de novo Genome Size Estimation ...) that requires the count of all the k-mers in a given sequencing file, can be performed using a fraction of time and memory using only the minimizer statistics, which MMC provides the user. This program has been built on top of [KMC3](https://github.com/refresh-bio/KMC).
 
 Benchmark
 =
