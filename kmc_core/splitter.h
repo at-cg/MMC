@@ -163,7 +163,7 @@ template <typename COUNTER_TYPE> class CWSmallKSplitter {
 	uint64 n_reads;
 	uint64 total_kmers;
 	uint32 kmer_len;
-
+	uint32 window_len; 
 public:
 	CWSmallKSplitter(CKMCParams &Params, CKMCQueues &Queues);
 	~CWSmallKSplitter();
