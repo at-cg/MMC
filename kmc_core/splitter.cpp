@@ -476,7 +476,7 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 
 		i = 0;
 		bool contains_N = false;
-		while (i + kmer_len - 1 < seq_size)
+		while (i + kmer_len - 1 < seq_size && (w_len + kmer_len - 1) <= seq_size)
 		{		
 			for (; i < seq_size; ++i)
 			{
@@ -616,7 +616,7 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 			}
 		}
 
-		if(!contains_N)
+		if(!contains_N && (w_len + kmer_len - 1) <= seq_size)
 		{
 			// adding the last minimizer in the read
 
@@ -709,7 +709,8 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 		
 		i = 0;
 		bool contains_N = false;
-		while (i + kmer_len - 1 < seq_size)
+
+		while (i + kmer_len - 1 < seq_size && (w_len + kmer_len - 1) <= seq_size)
 		{
 			for (; i < seq_size; ++i)
 			{
@@ -850,7 +851,7 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 			}
 		}
 
-		if(!contains_N){
+		if(!contains_N && (w_len + kmer_len - 1) <= seq_size ){
 
 			// adding the last minimizer in the read
 
