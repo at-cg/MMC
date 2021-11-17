@@ -33,6 +33,7 @@ void usage()
 		<< "Options:\n"
 		<< "  -v - verbose mode (shows all parameter settings); default: false\n"
 		<< "  -k<len> - k-mer length (k from " << KMC::CfgConsts::min_k<< " to " << KMC::CfgConsts::max_k << "; default: 25)\n"
+		<< "  -wv<len> - window length; default: length of k-mer\n"  
 		<< "  -m<size> - max amount of RAM in GB (from 1 to 1024); default: 12\n"
 		<< "  -sm - use strict memory mode (memory limit from -m<n> switch will not be exceeded)\n"
 		<< "  -hc - count homopolymer compressed k-mers (approximate and experimental)\n"
@@ -55,8 +56,8 @@ void usage()
 		//<< "  -e - only estimate histogram of k-mers occurrences instead of exact k-mer counting\n"
 		<< "  --opt-out-size - optimize output database size (may increase running time)\n"
 		<< "Example:\n"
-		<< "mmc -k27 -m24 NA19238.fastq NA.res /data/kmc_tmp_dir/\n"
-		<< "mmc -k27 -m24 @files.lst NA.res /data/kmc_tmp_dir/\n";
+		<< "mmc -k27 -wv27 -m24 NA19238.fastq NA.res /data/kmc_tmp_dir/\n"
+		<< "mmc -k27 -wv27 -m24 @files.lst NA.res /data/kmc_tmp_dir/\n";
 }
 
 //----------------------------------------------------------------------------------
@@ -126,6 +127,12 @@ bool parse_parameters(int argc, char* argv[], Params& params)
             assert(atoi(&argv[i][2])>0 && atoi(&argv[i][2])<=28); // Will remove this later once we figure out how to work with higher k-mer values
             stage1Params.SetKmerLen(atoi(&argv[i][2]));
         }
+		// window length 
+		else if (strncmp(argv[i], "-wv", 3) == 0) 
+		{
+			stage1Params.SetWindowLen(atoi(&argv[i][3]));
+			//printf("window length is %d \n", atoi(&argv[i][3])); // Souvadra
+		}
 		// Memory limit
 		else if (strncmp(argv[i], "-m", 2) == 0)
 		{
