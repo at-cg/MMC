@@ -56,8 +56,8 @@ void usage()
 		//<< "  -e - only estimate histogram of k-mers occurrences instead of exact k-mer counting\n"
 		<< "  --opt-out-size - optimize output database size (may increase running time)\n"
 		<< "Example:\n"
-		<< "mmc -k27 -m24 NA19238.fastq NA.res /data/kmc_tmp_dir/\n"
-		<< "mmc -k27 -m24 @files.lst NA.res /data/kmc_tmp_dir/\n";
+		<< "mmc -k27 -wv27 -m24 NA19238.fastq NA.res /data/kmc_tmp_dir/\n"
+		<< "mmc -k27 -wv27 -m24 @files.lst NA.res /data/kmc_tmp_dir/\n";
 }
 
 //----------------------------------------------------------------------------------
