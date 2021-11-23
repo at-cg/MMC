@@ -151,17 +151,17 @@ public:
 		mask.set_n_1((header.kmer_len - header.lut_prefix_len) * 2);
 
 		std::string file_src = input_desc.file_src;
-		prefix_file = fopen((file_src + ".kmc_pre").c_str(), "rb");
+		prefix_file = fopen((file_src + ".mmc_pre").c_str(), "rb");
 		if (!prefix_file)
 		{
-			std::cerr << "Error: cannot open file : " << (file_src + ".kmc_pre") << "\n";
+			std::cerr << "Error: cannot open file : " << (file_src + ".mmc_pre") << "\n";
 			exit(1);
 		}
 		file_src = input_desc.file_src;
-		suffix_file = fopen((file_src + ".kmc_suf").c_str(), "rb");
+		suffix_file = fopen((file_src + ".mmc_suf").c_str(), "rb");
 		if (!suffix_file)
 		{
-			std::cerr << "Error: cannot open file : " << (file_src + ".kmc_suf") << "\n";
+			std::cerr << "Error: cannot open file : " << (file_src + ".mmc_suf") << "\n";
 			exit(1);
 		}
 

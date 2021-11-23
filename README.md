@@ -19,12 +19,12 @@ After that, you can run ```make``` to compile mmc, mmc_dump, and mmc_tools appli
 
 Binaries
 =
-After compilation you will obtain two binaries:
+After compilation you will obtain the following binaries:
 * bin/mmc - the main program for counting minimizer occurrences
 * bin/mmc_dump - the program listing minimizers in a database produced by mmc
 * bin/mmc_tools - the program allowing to manipulate mmc databases (set operations, transformations, etc.)
 
-Script
+Other scripts
 =
 The scripts folder contains:
 * bc_script.cpp - the script to compute Bray-Curtis dissimilarity between two metagenomes.

@@ -1,4 +1,5 @@
-all: kmc kmc_dump kmc_tools py_kmc_api
+all: mmc mmc_dump mmc_tools
+#all: mmc mmc_dump mmc_tools py_mmc_api
 
 UNAME_S := $(shell uname -s)
 
@@ -125,22 +126,22 @@ $(LIB_KMC_CORE): $(KMC_CORE_OBJS) $(RADULS_OBJS) $(KMC_API_OBJS) $(KFF_OBJS)
 	-mkdir -p $(OUT_BIN_DIR)
 	ar rcs $@ $^
 
-kmc: $(KMC_CLI_OBJS) $(LIB_KMC_CORE)
+mmc: $(KMC_CLI_OBJS) $(LIB_KMC_CORE)
 	-mkdir -p $(OUT_BIN_DIR)
 	$(CC) $(CLINK) -o $(OUT_BIN_DIR)/mmc $^ $(KMC_LIBS)
 
-kmc_dump: $(KMC_DUMP_OBJS) $(KMC_API_OBJS)
+mmc_dump: $(KMC_DUMP_OBJS) $(KMC_API_OBJS)
 	-mkdir -p $(OUT_BIN_DIR)
 	$(CC) $(CLINK) -o $(OUT_BIN_DIR)/mmc_dump $^
 
-kmc_tools: $(KMC_TOOLS_OBJS) $(KMC_API_OBJS) $(KFF_OBJS)
+mmc_tools: $(KMC_TOOLS_OBJS) $(KMC_API_OBJS) $(KFF_OBJS)
 	-mkdir -p $(OUT_BIN_DIR)
 	$(CC) $(CLINK) -o $(OUT_BIN_DIR)/mmc_tools $^ $(KMC_TOOLS_LIBS)
 
 $(PY_KMC_API_DIR)/%.o: $(KMC_API_DIR)/%.cpp
 	$(CC) -c -fPIC -Wall -O3 -m64 -std=c++14 $^ -o $@
 
-py_kmc_api: $(PY_KMC_API_OBJS) $(PY_KMC_API_OBJS)
+py_mmc_api: $(PY_KMC_API_OBJS) $(PY_KMC_API_OBJS)
 	-mkdir -p $(OUT_BIN_DIR)
 	$(CC) $(PY_KMC_API_CFLAGS) $(PY_KMC_API_DIR)/py_kmc_api.cpp $(PY_KMC_API_OBJS) \
 	-I $(KMC_API_DIR) \

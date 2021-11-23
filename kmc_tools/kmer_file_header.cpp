@@ -27,7 +27,7 @@ CKmerFileHeader::CKmerFileHeader(std::string file_name)
 		return;
 	}
 
-	file_name += ".kmc_pre";
+	file_name += ".mmc_pre";
 	FILE* file = my_fopen(file_name.c_str(), "rb");
 	if (!file)
 	{

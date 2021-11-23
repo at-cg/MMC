@@ -294,8 +294,8 @@ bool parse_parameters(int argc, char* argv[], Params& params)
 	//Check if output files may be created and if it is possible to create file in specified tmp location
 	if (!stage2Params.GetWithoutOutput())
 	{		
-		string pre_file_name = stage2Params.GetOutputFileName() + ".kmc_pre";
-		string suff_file_name = stage2Params.GetOutputFileName() + ".kmc_suf";
+		string pre_file_name = stage2Params.GetOutputFileName() + ".mmc_pre";
+		string suff_file_name = stage2Params.GetOutputFileName() + ".mmc_suf";
 		if (!CanCreateFile(pre_file_name))
 		{
 			cerr << "Error: Cannot create file: " << pre_file_name << "\n";

@@ -169,8 +169,8 @@ bool CSmallKCompleter::CompleteKMCFormat(CSmallKBuf<COUNTER_TYPE> result)
 	FILE* suf_file = nullptr;
 	FILE* pre_file = nullptr;
 
-	string pre_file_name = output_file_name + ".kmc_pre";
-	string suf_file_name = output_file_name + ".kmc_suf";
+	string pre_file_name = output_file_name + ".mmc_pre";
+	string suf_file_name = output_file_name + ".mmc_suf";
 
 	if (!this->without_output)
 	{

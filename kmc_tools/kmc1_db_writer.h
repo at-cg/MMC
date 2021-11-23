@@ -120,8 +120,8 @@ bundles_queue(DEFAULT_CIRCULAL_QUEUE_CAPACITY)
 	kmc_suf = NULL;
 	pre_buff = NULL;
 	suf_buff = NULL;
-	std::string kmc_pre_file_name = output_desc.file_src + ".kmc_pre";
-	std::string kmc_suf_file_name = output_desc.file_src + ".kmc_suf";
+	std::string kmc_pre_file_name = output_desc.file_src + ".mmc_pre";
+	std::string kmc_suf_file_name = output_desc.file_src + ".mmc_suf";
 
 	kmc_pre = fopen(kmc_pre_file_name.c_str(), "wb");
 	

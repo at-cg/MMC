@@ -47,7 +47,7 @@ public:
 
 	void InitKMC(const std::string& path)
 	{
-		std::string pre_file_name = path + ".kmc_pre";
+		std::string pre_file_name = path + ".mmc_pre";
 		FILE* file = fopen(pre_file_name.c_str(), "rb");
 		if(!file)
 		{

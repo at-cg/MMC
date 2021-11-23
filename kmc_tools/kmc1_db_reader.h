@@ -454,7 +454,7 @@ template<unsigned SIZE> bool CKMC1DbReader<SIZE>::reload_suf_buff()
 template<unsigned SIZE> void CKMC1DbReader<SIZE>::open_files()
 {
 
-	suffix_file_name = desc.file_src + ".kmc_suf";
+	suffix_file_name = desc.file_src + ".mmc_suf";
 
 	suffix_file = fopen(suffix_file_name.c_str(), "rb");
 	
@@ -496,7 +496,7 @@ template<unsigned SIZE> void CKMC1DbReader<SIZE>::open_files()
 	my_fseek(suffix_file, 4, SEEK_SET); //skip KMCS
 
 
-	prefix_file_name = desc.file_src + ".kmc_pre";
+	prefix_file_name = desc.file_src + ".mmc_pre";
 
 	prefix_file = fopen(prefix_file_name.c_str(), "rb");
 	

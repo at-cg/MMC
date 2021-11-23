@@ -30,12 +30,12 @@ bool CKMCFile::OpenForRA(const std::string &file_name)
 	if (file_pre || file_suf)
 		return false;
 
-	if (!OpenASingleFile(file_name + ".kmc_pre", file_pre, size, (char *)"KMCP"))
+	if (!OpenASingleFile(file_name + ".mmc_pre", file_pre, size, (char *)"KMCP"))
 		return false;
 
 	ReadParamsFrom_prefix_file_buf(size, open_mode::opened_for_RA);
 
-	if (!OpenASingleFile(file_name + ".kmc_suf", file_suf, size, (char *)"KMCS"))
+	if (!OpenASingleFile(file_name + ".mmc_suf", file_suf, size, (char *)"KMCS"))
 		return false;
 
 	sufix_file_buf = new uchar[size];
@@ -68,14 +68,14 @@ bool CKMCFile::OpenForListing(const std::string &file_name)
 	if (file_pre || file_suf)
 		return false;
 
-	if (!OpenASingleFile(file_name + ".kmc_pre", file_pre, size, (char *)"KMCP"))
+	if (!OpenASingleFile(file_name + ".mmc_pre", file_pre, size, (char *)"KMCP"))
 		return false;
 
 	ReadParamsFrom_prefix_file_buf(size, open_mode::opened_for_listing);
 
 	end_of_file = total_kmers == 0;
 
-	if (!OpenASingleFile(file_name + ".kmc_suf", file_suf, size, (char *)"KMCS"))
+	if (!OpenASingleFile(file_name + ".mmc_suf", file_suf, size, (char *)"KMCS"))
 		return false;
 
 	sufix_file_buf = new uchar[part_size];

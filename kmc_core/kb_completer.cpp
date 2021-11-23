@@ -35,8 +35,8 @@ CKmerBinCompleter::CKmerBinCompleter(CKMCParams &Params, CKMCQueues &Queues)
 
 	bbkpq		   = Queues.bbkpq.get();
 	use_strict_mem = Params.use_strict_mem;
-	kmer_file_name = file_name + ".kmc_suf";
-	lut_file_name  = file_name + ".kmc_pre";
+	kmer_file_name = file_name + ".mmc_suf";
+	lut_file_name  = file_name + ".mmc_pre";
 
 	kmer_len       = Params.kmer_len;
 	signature_len  = Params.signature_len;

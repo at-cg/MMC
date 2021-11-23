@@ -1423,7 +1423,7 @@ template<unsigned SIZE> CKMC2DbReaderSorted<SIZE>::CKMC2DbReaderSorted(const CKm
 		exit(1);
 	}
 
-	std::string kmc_pre_file_name = desc.file_src + ".kmc_pre";
+	std::string kmc_pre_file_name = desc.file_src + ".mmc_pre";
 	FILE* kmc_pre = fopen(kmc_pre_file_name.c_str(), "rb");
 	if (!kmc_pre)
 	{
@@ -1439,7 +1439,7 @@ template<unsigned SIZE> CKMC2DbReaderSorted<SIZE>::CKMC2DbReaderSorted(const CKm
 	}
 	fclose(kmc_pre);
 
-	std::string kmc_suf_file_name = desc.file_src + ".kmc_suf";
+	std::string kmc_suf_file_name = desc.file_src + ".mmc_suf";
 	kmc_suf = fopen(kmc_suf_file_name.c_str(), "rb");
 
 	if (!kmc_suf)
@@ -1647,7 +1647,7 @@ template<unsigned SIZE> CKCM2DbReaderSeqCounter_Base<SIZE>::~CKCM2DbReaderSeqCou
 /*****************************************************************************************************************************/
 template<unsigned SIZE> void CKCM2DbReaderSeqCounter_Base<SIZE>::open_files()
 {
-	suffix_file_name = desc.file_src + ".kmc_suf";
+	suffix_file_name = desc.file_src + ".mmc_suf";
 
 	suffix_file = fopen(suffix_file_name.c_str(), "rb");
 
@@ -1719,7 +1719,7 @@ CKCM2DbReaderSeqCounter_Base<SIZE>(header, desc)
 {
 	this->open_files();
 
-	prefix_file_name = desc.file_src + ".kmc_pre";
+	prefix_file_name = desc.file_src + ".mmc_pre";
 	prefix_file = fopen(prefix_file_name.c_str(), "rb");
 
 	if (!prefix_file)
