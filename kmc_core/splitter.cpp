@@ -743,6 +743,7 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 				if(i>=kmer_len-1) // atleast one full kmer formed
 				{
 					kmer_hash = hash64(can_int, mask1);
+                    //std::cout << can_int << " - " << mask1 << " - " << kmer_hash << std::endl;
 					buf[buf_pos] = kmer_hash;
 					kmer_strand_buf[buf_pos] = kmer_strand;
 				}
