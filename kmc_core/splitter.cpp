@@ -23,7 +23,6 @@ uint32 CSplitter::MAX_LINE_SIZE = 1 << 16;
 // Assigns queues
 CSplitter::CSplitter(CKMCParams &Params, CKMCQueues &Queues)
 {
-	//////std::cout << "line 25 of splitter.cpp is running" << std::endl; // Souvadra
 	//mm = Queues.mm;
 	file_type = Params.file_type;
 	both_strands = Params.both_strands;
@@ -31,7 +30,7 @@ CSplitter::CSplitter(CKMCParams &Params, CKMCQueues &Queues)
 	bin_part_queue = Queues.bpq.get();
 	pmm_reads = Queues.pmm_reads.get();
 	kmer_len = Params.kmer_len;
-	window_len = Params.window_len; // Souvadra's addition
+	window_len = Params.window_len;
 	signature_len = Params.signature_len;
 
 	mem_part_pmm_bins = Params.mem_part_pmm_bins;
@@ -682,7 +681,6 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	// ADDED VARIABLES
 	uint32_t w_len = window_len; // Window length. Using w=k for now
 	if (w_len == 0) {w_len = kmer_len;}
-	////std::cout << "line 681 @splitter.cpp | w_len = " << w_len << std::endl; // Souvadra's addition
 	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
 	uint32_t min_flag = 0; // checks if a minimizer has already been computed in an iteration
 	uint64_t kmer_int = 0; // Integer representation of a kmer
@@ -743,7 +741,6 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 				if(i>=kmer_len-1) // atleast one full kmer formed
 				{
 					kmer_hash = hash64(can_int, mask1);
-					//std::cout << kmer_hash << std::endl;
 					buf[buf_pos] = kmer_hash;
 					kmer_strand_buf[buf_pos] = kmer_strand;
 				}
@@ -761,7 +758,6 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 				{
 					if(min_hash != UINT64_MAX)
 					{
-						//std::cout << "FOUND SMALLER: " << kmer_hash << " " << min_hash << std::endl;
 						// add the current minimizer
 						
 						// Minimizer came from forward strand so form the signature as is
@@ -795,7 +791,6 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 				{
 					if(i >= w_len + kmer_len - 1 && min_hash != UINT64_MAX)
 					{
-						//std::cout << "MOVED OUT OF WINDOW: " << min_hash << std::endl;
 						// add the current minimizer
 						if(min_strand == 0){
 							current_signature.insert(seq + min_loc - kmer_len + 1);
@@ -862,7 +857,6 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 		if(!contains_N && (w_len + kmer_len - 1) <= seq_size ){
 
 			// adding the last minimizer in the read
-			//std::cout << "LAST MINIMIZER: " << min_hash << std::endl;
 
 			if(min_strand == 0){
 				current_signature.insert(seq + min_loc - kmer_len + 1);
