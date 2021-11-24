@@ -11,7 +11,7 @@ Date   : 2019-05-19
 #include "splitter.h"
 #include <iostream>
 #include <limits>
-
+//#include <bitset>
 //************************************************************************************************************
 // CSplitter class - splits kmers into bins according to their signatures
 //************************************************************************************************************
@@ -456,8 +456,10 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 	uint64_t rcm_kmer_int = 0; // Integer representation for the reverse complement of a kmer
 	uint64_t can_int = 0; // Stores smaller of hash(kmer_int) and hash(rcm_kmer_int)
 	uint64_t kmer_strand = 0; // 1 if the kmer was from the reverse strand and 0 otherwise
-	uint64_t mask1 = (1ULL<<2 * kmer_len) - 1; // Mask to keep the kmer_int values in range
-	if (kmer_int == 32) {mask1 = std::numeric_limits<uint64_t>::max();}
+    uint64_t mask1 = (1ULL<<2 * kmer_len) - 1; // Mask to keep the kmer_int values in range
+	if (kmer_len == 32) {mask1 = std::numeric_limits<uint64_t>::max();}
+    //std::bitset<64> bitset1{mask1};
+    //std::cout << bitset1 << std::endl;
   	uint64_t shift1 = 2 * (kmer_len-1);
 	uint64_t kmer_hash = UINT64_MAX; // Stores the hash value of the kmer formed
 	uint64_t min_hash = UINT64_MAX; // Stores the hash value of the last minimizer
@@ -688,7 +690,7 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	uint64_t can_int = 0; // Stores smaller of hash(kmer_int) and hash(rcm_kmer_int)
 	uint64_t kmer_strand = 0; // 1 if the kmer was from the reverse strand and 0 otherwise
 	uint64_t mask1 = (1ULL<<2 * kmer_len) - 1; // Mask to keep the kmer_int values in range
-	if (kmer_int == 32) {mask1 = std::numeric_limits<uint64_t>::max();}
+	if (kmer_len == 32) {mask1 = std::numeric_limits<uint64_t>::max();}
   	uint64_t shift1 = 2 * (kmer_len-1);
 	uint64_t kmer_hash = UINT64_MAX; // Stores the hash value of the kmer formed
 	uint64_t min_hash = UINT64_MAX; // Stores the hash value of the last minimizer
