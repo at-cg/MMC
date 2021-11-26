@@ -124,7 +124,7 @@ bool parse_parameters(int argc, char* argv[], Params& params)
 		// k-mer length
 		else if (strncmp(argv[i], "-k", 2) == 0) 
         {
-            assert(atoi(&argv[i][2])>0 && atoi(&argv[i][2])<=28); // Will remove this later once we figure out how to work with higher k-mer values
+            assert(atoi(&argv[i][2])>0 && atoi(&argv[i][2])<=32); // Will remove this later once we figure out how to work with higher k-mer values
             stage1Params.SetKmerLen(atoi(&argv[i][2]));
         }
 		// window length 

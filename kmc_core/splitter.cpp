@@ -10,7 +10,8 @@ Date   : 2019-05-19
 
 #include "splitter.h"
 #include <iostream>
-
+#include <limits>
+//#include <bitset>
 //************************************************************************************************************
 // CSplitter class - splits kmers into bins according to their signatures
 //************************************************************************************************************
@@ -22,7 +23,6 @@ uint32 CSplitter::MAX_LINE_SIZE = 1 << 16;
 // Assigns queues
 CSplitter::CSplitter(CKMCParams &Params, CKMCQueues &Queues)
 {
-	////std::cout << "line 25 of splitter.cpp is running" << std::endl; // Souvadra
 	//mm = Queues.mm;
 	file_type = Params.file_type;
 	both_strands = Params.both_strands;
@@ -30,7 +30,7 @@ CSplitter::CSplitter(CKMCParams &Params, CKMCQueues &Queues)
 	bin_part_queue = Queues.bpq.get();
 	pmm_reads = Queues.pmm_reads.get();
 	kmer_len = Params.kmer_len;
-	window_len = Params.window_len; // Souvadra's addition
+	window_len = Params.window_len;
 	signature_len = Params.signature_len;
 
 	mem_part_pmm_bins = Params.mem_part_pmm_bins;
@@ -456,7 +456,10 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 	uint64_t rcm_kmer_int = 0; // Integer representation for the reverse complement of a kmer
 	uint64_t can_int = 0; // Stores smaller of hash(kmer_int) and hash(rcm_kmer_int)
 	uint64_t kmer_strand = 0; // 1 if the kmer was from the reverse strand and 0 otherwise
-	uint64_t mask1 = (1ULL<<2 * kmer_len) - 1; // Mask to keep the kmer_int values in range
+    uint64_t mask1 = (1ULL<<2 * kmer_len) - 1; // Mask to keep the kmer_int values in range
+	if (kmer_len == 32) {mask1 = std::numeric_limits<uint64_t>::max();}
+    //std::bitset<64> bitset1{mask1};
+    //std::cout << bitset1 << std::endl;
   	uint64_t shift1 = 2 * (kmer_len-1);
 	uint64_t kmer_hash = UINT64_MAX; // Stores the hash value of the kmer formed
 	uint64_t min_hash = UINT64_MAX; // Stores the hash value of the last minimizer
@@ -503,7 +506,7 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 				
 				if(i>=kmer_len-1) // atleast one full kmer formed
 				{
-					kmer_hash = hash64(can_int, mask1) << 8 | kmer_len;
+					kmer_hash = hash64(can_int, mask1);
 					buf[buf_pos] = kmer_hash; // push the kmer hash to the buffer
 					kmer_strand_buf[buf_pos] = kmer_strand;
 				}
@@ -680,7 +683,6 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	// ADDED VARIABLES
 	uint32_t w_len = window_len; // Window length. Using w=k for now
 	if (w_len == 0) {w_len = kmer_len;}
-	//std::cout << "line 681 @splitter.cpp | w_len = " << w_len << std::endl; // Souvadra's addition
 	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
 	uint32_t min_flag = 0; // checks if a minimizer has already been computed in an iteration
 	uint64_t kmer_int = 0; // Integer representation of a kmer
@@ -688,6 +690,7 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	uint64_t can_int = 0; // Stores smaller of hash(kmer_int) and hash(rcm_kmer_int)
 	uint64_t kmer_strand = 0; // 1 if the kmer was from the reverse strand and 0 otherwise
 	uint64_t mask1 = (1ULL<<2 * kmer_len) - 1; // Mask to keep the kmer_int values in range
+	if (kmer_len == 32) {mask1 = std::numeric_limits<uint64_t>::max();}
   	uint64_t shift1 = 2 * (kmer_len-1);
 	uint64_t kmer_hash = UINT64_MAX; // Stores the hash value of the kmer formed
 	uint64_t min_hash = UINT64_MAX; // Stores the hash value of the last minimizer
@@ -739,7 +742,8 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 
 				if(i>=kmer_len-1) // atleast one full kmer formed
 				{
-					kmer_hash = hash64(can_int, mask1) << 8 | kmer_len;
+					kmer_hash = hash64(can_int, mask1);
+                    //std::cout << can_int << " - " << mask1 << " - " << kmer_hash << std::endl;
 					buf[buf_pos] = kmer_hash;
 					kmer_strand_buf[buf_pos] = kmer_strand;
 				}
