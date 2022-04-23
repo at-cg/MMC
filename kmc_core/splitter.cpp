@@ -447,6 +447,15 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 	CMmer current_signature(signature_len);
 	uint32 i;
 
+	uint32_t minimizer_type = 1; // 0 is for window and 1 is for universe minimizers
+
+	////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////// WINDOW MINIMIZERS ///////////////////////////
+	////////////////////////////////////////////////////////////////////////////////
+
+	if(minimizer_type == 0)
+	{
+		
 	// ADDED VARIABLES
 	uint32_t w_len = window_len; 
 	if (w_len == 0) {w_len = kmer_len;}
@@ -677,6 +686,95 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 	pmm_reads->free(seq);
 	pmm_reads->free(rev);
 
+	}
+
+	////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////// UNIVERSE MINIMIZERS /////////////////////////
+	////////////////////////////////////////////////////////////////////////////////
+
+	else
+	{
+	
+	// ADDED VARIABLES
+	float delta = 0.03; // Density Parameter
+	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
+	uint64_t kmer_int = 0; // Integer representation of a kmer
+	uint64_t rcm_kmer_int = 0; // Integer representation for the reverse complement of a kmer
+	uint64_t can_int = 0; // Stores smaller of hash(kmer_int) and hash(rcm_kmer_int)
+	uint64_t kmer_strand = 0; // 1 if the kmer was from the reverse strand and 0 otherwise
+	uint64_t mask1 = (1ULL<<2 * kmer_len) - 1; // Mask to keep the kmer_int values in range
+	if (kmer_len == 32) {mask1 = std::numeric_limits<uint64_t>::max();}
+  	uint64_t shift1 = 2 * (kmer_len-1);
+	uint64_t kmer_hash = UINT64_MAX; // Stores the hash value of the kmer formed
+	char *rev; // stores the reverse complement of a kmer
+	pmm_reads->reserve(rev);
+
+	uint32 i_new;
+		
+	while (GetSeq(seq, seq_size, read_type))
+	{
+		
+		if (homopolymer_compressed)
+			HomopolymerCompressSeq(seq, seq_size);
+		
+		i = 0;
+		i_new = 0;
+
+		while (i + kmer_len - 1 < seq_size)
+		{
+			for (; i < seq_size; ++i, ++i_new)
+			{
+				if(seq[i] < 0)
+				{
+					i_new = -1; // so that it starts from 0 in next iteration
+					continue;
+
+				}
+				else
+				{
+					kmer_int = (kmer_int << 2 | seq[i]) & mask1;
+					kmer_strand = 0;
+					can_int = kmer_int;
+					if (canonical_flag) 
+					{
+						rcm_kmer_int = (rcm_kmer_int >> 2) | (3ULL^seq[i]) << shift1;
+						if(rcm_kmer_int < kmer_int){
+							can_int = rcm_kmer_int;
+							kmer_strand = 1;
+						}
+					}
+				}
+
+				if(i_new>=kmer_len-1) // atleast one full kmer formed
+				{
+					kmer_hash = (hash64(can_int, mask1) << 8) | kmer_len;
+					// // kmer_hash = hash64(can_int, mask1);
+
+					
+					if(kmer_hash <= delta*mask1)
+					{
+						if(kmer_strand == 0){
+							current_signature.insert(seq + i - kmer_len + 1);
+							_stats[current_signature.get()] += 1;
+						}
+						else{
+							for(uint32_t rev_i = 0; rev_i < signature_len; rev_i++){
+								rev[rev_i] = 3 - (int)seq[i - rev_i];
+							}
+							
+							current_signature.insert(rev);
+							_stats[current_signature.get()] += 1;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	pmm_reads->free(seq);
+	pmm_reads->free(rev);
+	}
+
 }
 
 //----------------------------------------------------------------------------------
@@ -713,6 +811,16 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	CMmer current_signature(signature_len);
 	uint32 bin_no;
 	uint32 i;
+
+	uint32_t minimizer_type = 1; // 0 is for window and 1 is for universe minimizers
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////// WINDOW MINIMIZERS ///////////////////////////
+	////////////////////////////////////////////////////////////////////////////////
+
+	if(minimizer_type == 0)
+	{
 
 	// ADDED VARIABLES
 	uint32_t w_len = window_len; // Window length. Using w=k for now
@@ -954,6 +1062,106 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	pmm_reads->free(rev);
 
 	return true;
+
+	}
+
+
+	////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////// UNIVERSE MINIMIZERS /////////////////////////
+	////////////////////////////////////////////////////////////////////////////////
+
+	else
+	{
+
+	// ADDED VARIABLES
+	float delta = 0.03; // Density Parameter
+	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
+	uint64_t kmer_int = 0; // Integer representation of a kmer
+	uint64_t rcm_kmer_int = 0; // Integer representation for the reverse complement of a kmer
+	uint64_t can_int = 0; // Stores smaller of hash(kmer_int) and hash(rcm_kmer_int)
+	uint64_t kmer_strand = 0; // 1 if the kmer was from the reverse strand and 0 otherwise
+	uint64_t mask1 = (1ULL<<2 * kmer_len) - 1; // Mask to keep the kmer_int values in range
+	if (kmer_len == 32) {mask1 = std::numeric_limits<uint64_t>::max();}
+  	uint64_t shift1 = 2 * (kmer_len-1);
+	uint64_t kmer_hash = UINT64_MAX; // Stores the hash value of the kmer formed
+	char *rev; // stores the reverse complement of a kmer
+	pmm_reads->reserve(rev);
+
+	uint32 i_new;
+		
+	while (GetSeq(seq, seq_size, read_type))
+	{
+		if (ntHashEstimator)
+			ntHashEstimator->Process(seq, seq_size);
+
+		if (homopolymer_compressed)
+			HomopolymerCompressSeq(seq, seq_size);
+		
+		i = 0;
+		i_new = 0;
+
+		while (i + kmer_len - 1 < seq_size)
+		{
+			for (; i < seq_size; ++i, ++i_new)
+			{
+
+				if(seq[i] < 0)
+				{
+					i_new = -1; // so that it starts from 0 in next iteration
+					continue;
+
+				}
+				else
+				{
+					kmer_int = (kmer_int << 2 | seq[i]) & mask1;
+					kmer_strand = 0;
+					can_int = kmer_int;
+					if (canonical_flag) 
+					{
+						rcm_kmer_int = (rcm_kmer_int >> 2) | (3ULL^seq[i]) << shift1;
+						if(rcm_kmer_int < kmer_int){
+							can_int = rcm_kmer_int;
+							kmer_strand = 1;
+						}
+					}
+				}
+
+				if(i_new>=kmer_len-1) // atleast one full kmer formed
+				{
+					
+					// kmer_hash = (hash64(can_int, mask1) << 8) | kmer_len;
+					kmer_hash = hash64(can_int, mask1);
+
+
+					if(kmer_hash <= delta*mask1)
+					{
+						
+						if(kmer_strand == 0){
+							current_signature.insert(seq + i - kmer_len + 1);
+							bin_no = s_mapper->get_bin_id(current_signature.get());
+							bins[bin_no]->PutExtendedKmer(seq + i - kmer_len + 1, kmer_len);
+						}
+						else{
+							
+							for(uint32_t rev_i = 0; rev_i < signature_len; rev_i++){
+								rev[rev_i] = 3 - (int)seq[i - rev_i];
+							}
+							current_signature.insert(rev);
+							bin_no = s_mapper->get_bin_id(current_signature.get()); 
+							bins[bin_no]->PutExtendedKmer(seq + i - kmer_len + 1, kmer_len);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	pmm_reads->free(seq);
+	pmm_reads->free(rev);
+
+	return true;
+	}
+
 }
 
 //----------------------------------------------------------------------------------
