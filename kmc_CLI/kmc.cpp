@@ -33,7 +33,9 @@ void usage()
 		<< "Options:\n"
 		<< "  -v - verbose mode (shows all parameter settings); default: false\n"
 		<< "  -k<len> - k-mer length (k from " << KMC::CfgConsts::min_k<< " to " << KMC::CfgConsts::max_k << "; default: 25)\n"
-		<< "  -wv<len> - window length; default: length of k-mer\n"  
+		<< "  -ver<version> - '1' for (w,k)-minimizers and '2' for universe-minimizers.; default: 1\n"
+		<< "  -dl<delta> - frequency of k-mers to be sampled as minimizer {for universe-minimizers}; default: 0.2\n"
+		<< "  -wv<len> - window length {for (w,k)-minimizers}; default: length of k-mer\n"  
 		<< "  -m<size> - max amount of RAM in GB (from 1 to 1024); default: 12\n"
 		<< "  -sm - use strict memory mode (memory limit from -m<n> switch will not be exceeded)\n"
 		<< "  -hc - count homopolymer compressed k-mers (approximate and experimental)\n"
@@ -127,11 +129,23 @@ bool parse_parameters(int argc, char* argv[], Params& params)
             assert(atoi(&argv[i][2])>0 && atoi(&argv[i][2])<=32); // Will remove this later once we figure out how to work with higher k-mer values
             stage1Params.SetKmerLen(atoi(&argv[i][2]));
         }
+		// minimizer version
+		else if (strncmp(argv[1], "-ver", 4) == 0)
+		{
+			stage1Params.SetMinimizerVer(atoi(&argv[i][4]));
+			printf("Minimizer Version Number is: %d \n", atoi(&argv[i][4]));
+		}
 		// window length 
-		else if (strncmp(argv[i], "-wv", 3) == 0) 
+		else if ( (stage1Params.GetMinimizerVer() == 1) && (strncmp(argv[i], "-wv", 3) == 0) ) 
 		{
 			stage1Params.SetWindowLen(atoi(&argv[i][3]));
 			//printf("window length is %d \n", atoi(&argv[i][3])); // Souvadra
+		}
+		// delta parameter 
+		else if ( (stage1Params.GetMinimizerVer() == 2) && (strncmp(argv[i], "-dl", 3) == 0) ) 
+		{
+			stage1Params.SetDelta(atof(&argv[i][3])); 
+			printf("delta parameter is: %f \n", atof(&argv[i][3]));
 		}
 		// Memory limit
 		else if (strncmp(argv[i], "-m", 2) == 0)

@@ -696,7 +696,7 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 	{
 	
 	// ADDED VARIABLES
-	float delta = 0.03; // Density Parameter
+	float delta = delta_val; // 0.03; // Density Parameter
 	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
 	uint64_t kmer_int = 0; // Integer representation of a kmer
 	uint64_t rcm_kmer_int = 0; // Integer representation for the reverse complement of a kmer
@@ -812,256 +812,255 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	uint32 bin_no;
 	uint32 i;
 
-	uint32_t minimizer_type = 1; // 0 is for window and 1 is for universe minimizers
+	uint32_t minimizer_type = minimizerVersion; // 1 is for window and 2 is for universe minimizers
 
 
 	////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////// WINDOW MINIMIZERS ///////////////////////////
 	////////////////////////////////////////////////////////////////////////////////
 
-	if(minimizer_type == 0)
+	if(minimizer_type == 1)
 	{
+		// ADDED VARIABLES
+		uint32_t w_len = window_len; // Window length
+		if (w_len == 0) {w_len = kmer_len;}
+		uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
+		uint32_t min_flag = 0; // checks if a minimizer has already been computed in an iteration
+		uint64_t kmer_int = 0; // Integer representation of a kmer
+		uint64_t rcm_kmer_int = 0; // Integer representation for the reverse complement of a kmer
+		uint64_t can_int = 0; // Stores smaller of hash(kmer_int) and hash(rcm_kmer_int)
+		uint64_t kmer_strand = 0; // 1 if the kmer was from the reverse strand and 0 otherwise
+		uint64_t mask1 = (1ULL<<2 * kmer_len) - 1; // Mask to keep the kmer_int values in range
+		if (kmer_len == 32) {mask1 = std::numeric_limits<uint64_t>::max();}
+		uint64_t shift1 = 2 * (kmer_len-1);
+		uint64_t kmer_hash = UINT64_MAX; // Stores the hash value of the kmer formed
+		uint64_t min_hash = UINT64_MAX; // Stores the hash value of the last minimizer
+		uint64_t min_pos = 0; // Stores index of the last minimizer in the buffer
+		uint64_t min_loc = 0; // Stores the index of the last minimizer in the sequence
+		uint64_t min_strand = 0; // 1 if minimizer was from reverse strand and 0 otherwise
+		uint64_t buf[256]; // buffer to store w kmer_hashes at a time
+		uint64_t kmer_strand_buf[256]; // buffer to store w kmer_strand values at a time
+		uint64_t buf_pos = 0; // index for the buffer
+		char *rev; // stores the reverse complement of a kmer
+		pmm_reads->reserve(rev);
 
-	// ADDED VARIABLES
-	uint32_t w_len = window_len; // Window length. Using w=k for now
-	if (w_len == 0) {w_len = kmer_len;}
-	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
-	uint32_t min_flag = 0; // checks if a minimizer has already been computed in an iteration
-	uint64_t kmer_int = 0; // Integer representation of a kmer
-	uint64_t rcm_kmer_int = 0; // Integer representation for the reverse complement of a kmer
-	uint64_t can_int = 0; // Stores smaller of hash(kmer_int) and hash(rcm_kmer_int)
-	uint64_t kmer_strand = 0; // 1 if the kmer was from the reverse strand and 0 otherwise
-	uint64_t mask1 = (1ULL<<2 * kmer_len) - 1; // Mask to keep the kmer_int values in range
-	if (kmer_len == 32) {mask1 = std::numeric_limits<uint64_t>::max();}
-  	uint64_t shift1 = 2 * (kmer_len-1);
-	uint64_t kmer_hash = UINT64_MAX; // Stores the hash value of the kmer formed
-	uint64_t min_hash = UINT64_MAX; // Stores the hash value of the last minimizer
-	uint64_t min_pos = 0; // Stores index of the last minimizer in the buffer
-	uint64_t min_loc = 0; // Stores the index of the last minimizer in the sequence
-	uint64_t min_strand = 0; // 1 if minimizer was from reverse strand and 0 otherwise
-	uint64_t buf[256]; // buffer to store w kmer_hashes at a time
-	uint64_t kmer_strand_buf[256]; // buffer to store w kmer_strand values at a time
-	uint64_t buf_pos = 0; // index for the buffer
-	char *rev; // stores the reverse complement of a kmer
-	pmm_reads->reserve(rev);
-
-	uint32 i_new;
-		
-	while (GetSeq(seq, seq_size, read_type))
-	{
-		if (ntHashEstimator)
-			ntHashEstimator->Process(seq, seq_size);
-
-		if (homopolymer_compressed)
-			HomopolymerCompressSeq(seq, seq_size);
-		
-		i = 0;
-		////////////////////////////
-		i_new = 0;
-
-		min_flag = 0;
-		min_hash = UINT64_MAX;
-		buf_pos = 0;
-		min_pos = 0;
-		min_loc = 0;
-		min_strand = 0; 
-		///////////////////////////
-
-		while (i + kmer_len - 1 < seq_size && (w_len + kmer_len - 1) <= seq_size)
+		uint32 i_new;
+			
+		while (GetSeq(seq, seq_size, read_type))
 		{
-			for (; i < seq_size; ++i, ++i_new) ///////////////////
+			if (ntHashEstimator)
+				ntHashEstimator->Process(seq, seq_size);
+
+			if (homopolymer_compressed)
+				HomopolymerCompressSeq(seq, seq_size);
+			
+			i = 0;
+			////////////////////////////
+			i_new = 0;
+
+			min_flag = 0;
+			min_hash = UINT64_MAX;
+			buf_pos = 0;
+			min_pos = 0;
+			min_loc = 0;
+			min_strand = 0; 
+			///////////////////////////
+
+			while (i + kmer_len - 1 < seq_size && (w_len + kmer_len - 1) <= seq_size)
 			{
-				if(seq[i] < 0)
+				for (; i < seq_size; ++i, ++i_new) ///////////////////
 				{
-
-					// Push last minimizer
-
-					if(min_hash != UINT64_MAX && i_new >= w_len + kmer_len - 1)
+					if(seq[i] < 0)
 					{
-						if(min_strand == 0){
-							current_signature.insert(seq + min_loc - kmer_len + 1);
-							bin_no = s_mapper->get_bin_id(current_signature.get());
-							bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
-						}
-						else{
-							
-							for(uint32_t rev_i = 0; rev_i < signature_len; rev_i++){
-								rev[rev_i] = 3 - (int)seq[min_loc - rev_i];
+
+						// Push last minimizer
+
+						if(min_hash != UINT64_MAX && i_new >= w_len + kmer_len - 1)
+						{
+							if(min_strand == 0){
+								current_signature.insert(seq + min_loc - kmer_len + 1);
+								bin_no = s_mapper->get_bin_id(current_signature.get());
+								bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
 							}
-							current_signature.insert(rev);
-							bin_no = s_mapper->get_bin_id(current_signature.get()); 
-							bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
-						}
-					}
-
-					// Reset all window parameter initializations
-
-					// ++i;
-					i_new = -1; // so that it starts from 0 in next iteration
-					min_hash = UINT64_MAX;
-					min_flag = 0;
-					buf_pos = 0;
-					min_pos = 0;
-					min_loc = 0;
-					min_strand = 0; 
-
-					continue;
-
-				}
-				else
-				{
-					kmer_int = (kmer_int << 2 | seq[i]) & mask1;
-					kmer_strand = 0;
-					can_int = kmer_int;
-					if (canonical_flag) 
-					{
-						rcm_kmer_int = (rcm_kmer_int >> 2) | (3ULL^seq[i]) << shift1;
-						if(rcm_kmer_int < kmer_int){
-							can_int = rcm_kmer_int;
-							kmer_strand = 1;
-						}
-					}
-				}
-
-				if(i_new>=kmer_len-1) // atleast one full kmer formed
-				{
-					kmer_hash = hash64(can_int, mask1);
-					buf[buf_pos] = kmer_hash;
-					kmer_strand_buf[buf_pos] = kmer_strand;
-				}
-				
-				if(kmer_hash <= min_hash && i_new<w_len+kmer_len-1 && i_new>=kmer_len-1) // get right most in first window
-				{
-					min_hash = kmer_hash;
-					min_pos = buf_pos;
-					min_loc = i;
-					min_flag = 1;
-					min_strand = kmer_strand;
-				}
-
-				if(kmer_hash < min_hash && i_new>=w_len+kmer_len-1) // smaller kmer found
-				{
-					if(min_hash != UINT64_MAX)
-					{
-						// add the current minimizer
-						
-						// Minimizer came from forward strand so form the signature as is
-						if(min_strand == 0){
-							current_signature.insert(seq + min_loc - kmer_len + 1);
-							bin_no = s_mapper->get_bin_id(current_signature.get()); // compute bin for the minimizer using the signature
-							bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len); // push the minimizer to the allocated bin
-						}
-
-						// Minimizer came from reverse strand. SO rev comp and then form the signature
-						// Ensures that both the kmer and its reverse complement have the same signature so that they are added to the same bins
-						else{
-							
-							for(uint32_t rev_i = 0; rev_i < signature_len; rev_i++){
-								rev[rev_i] = 3 - (int)seq[min_loc - rev_i];
+							else{
+								
+								for(uint32_t rev_i = 0; rev_i < signature_len; rev_i++){
+									rev[rev_i] = 3 - (int)seq[min_loc - rev_i];
+								}
+								current_signature.insert(rev);
+								bin_no = s_mapper->get_bin_id(current_signature.get()); 
+								bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
 							}
-							current_signature.insert(rev);
-							bin_no = s_mapper->get_bin_id(current_signature.get()); 
-							bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
 						}
+
+						// Reset all window parameter initializations
+
+						// ++i;
+						i_new = -1; // so that it starts from 0 in next iteration
+						min_hash = UINT64_MAX;
+						min_flag = 0;
+						buf_pos = 0;
+						min_pos = 0;
+						min_loc = 0;
+						min_strand = 0; 
+
+						continue;
+
 					}
-
-					min_hash = kmer_hash;
-					min_pos = buf_pos;
-					min_loc = i;
-					min_flag = 1;
-					min_strand = kmer_strand;
-				}
-
-				if(buf_pos == min_pos && min_flag == 0 && i_new>=kmer_len-1) // old minimizer moved out of window
-				{
-					if(i_new >= w_len + kmer_len - 1 && min_hash != UINT64_MAX)
+					else
 					{
-						// add the current minimizer
-						if(min_strand == 0){
-							current_signature.insert(seq + min_loc - kmer_len + 1);
-							bin_no = s_mapper->get_bin_id(current_signature.get());
-							bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
-						}
-						else{
-							for(uint32_t rev_i = 0; rev_i < signature_len; rev_i++){
-								rev[rev_i] = 3 - (int)seq[min_loc - rev_i];
+						kmer_int = (kmer_int << 2 | seq[i]) & mask1;
+						kmer_strand = 0;
+						can_int = kmer_int;
+						if (canonical_flag) 
+						{
+							rcm_kmer_int = (rcm_kmer_int >> 2) | (3ULL^seq[i]) << shift1;
+							if(rcm_kmer_int < kmer_int){
+								can_int = rcm_kmer_int;
+								kmer_strand = 1;
 							}
-
-							current_signature.insert(rev);
-							bin_no = s_mapper->get_bin_id(current_signature.get());
-							bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
 						}
 					}
 
-					min_hash = UINT64_MAX;
-
-					uint32_t j;
-					uint32_t j_counter = 0;
-
-					// Loop over the past window to find the rightmost minimizer
+					if(i_new>=kmer_len-1) // atleast one full kmer formed
+					{
+						kmer_hash = hash64(can_int, mask1);
+						buf[buf_pos] = kmer_hash;
+						kmer_strand_buf[buf_pos] = kmer_strand;
+					}
 					
-					for (j = buf_pos + 1; j < w_len; ++j)
-					{ 
-						if (buf[j] <= min_hash) //  >= is important s.t. min is always the closest k-mer
-						{
-							min_hash = buf[j];
-							min_strand = kmer_strand_buf[j];
-							min_pos = j;
-							min_loc = i - w_len + 1 + j_counter;
-						} 
-						
-						j_counter++;
-					}
-					for (j = 0; j <= buf_pos; ++j)
+					if(kmer_hash <= min_hash && i_new<w_len+kmer_len-1 && i_new>=kmer_len-1) // get right most in first window
 					{
-						if (buf[j] <= min_hash)
+						min_hash = kmer_hash;
+						min_pos = buf_pos;
+						min_loc = i;
+						min_flag = 1;
+						min_strand = kmer_strand;
+					}
+
+					if(kmer_hash < min_hash && i_new>=w_len+kmer_len-1) // smaller kmer found
+					{
+						if(min_hash != UINT64_MAX)
 						{
-							min_hash = buf[j];
-							min_strand = kmer_strand_buf[j];
-							min_pos = j;
-							min_loc = i - w_len + 1 + j_counter;
+							// add the current minimizer
+							
+							// Minimizer came from forward strand so form the signature as is
+							if(min_strand == 0){
+								current_signature.insert(seq + min_loc - kmer_len + 1);
+								bin_no = s_mapper->get_bin_id(current_signature.get()); // compute bin for the minimizer using the signature
+								bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len); // push the minimizer to the allocated bin
+							}
+
+							// Minimizer came from reverse strand. SO rev comp and then form the signature
+							// Ensures that both the kmer and its reverse complement have the same signature so that they are added to the same bins
+							else{
+								
+								for(uint32_t rev_i = 0; rev_i < signature_len; rev_i++){
+									rev[rev_i] = 3 - (int)seq[min_loc - rev_i];
+								}
+								current_signature.insert(rev);
+								bin_no = s_mapper->get_bin_id(current_signature.get()); 
+								bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
+							}
 						}
 
-						j_counter++;
+						min_hash = kmer_hash;
+						min_pos = buf_pos;
+						min_loc = i;
+						min_flag = 1;
+						min_strand = kmer_strand;
 					}
+
+					if(buf_pos == min_pos && min_flag == 0 && i_new>=kmer_len-1) // old minimizer moved out of window
+					{
+						if(i_new >= w_len + kmer_len - 1 && min_hash != UINT64_MAX)
+						{
+							// add the current minimizer
+							if(min_strand == 0){
+								current_signature.insert(seq + min_loc - kmer_len + 1);
+								bin_no = s_mapper->get_bin_id(current_signature.get());
+								bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
+							}
+							else{
+								for(uint32_t rev_i = 0; rev_i < signature_len; rev_i++){
+									rev[rev_i] = 3 - (int)seq[min_loc - rev_i];
+								}
+
+								current_signature.insert(rev);
+								bin_no = s_mapper->get_bin_id(current_signature.get());
+								bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
+							}
+						}
+
+						min_hash = UINT64_MAX;
+
+						uint32_t j;
+						uint32_t j_counter = 0;
+
+						// Loop over the past window to find the rightmost minimizer
+						
+						for (j = buf_pos + 1; j < w_len; ++j)
+						{ 
+							if (buf[j] <= min_hash) //  >= is important s.t. min is always the closest k-mer
+							{
+								min_hash = buf[j];
+								min_strand = kmer_strand_buf[j];
+								min_pos = j;
+								min_loc = i - w_len + 1 + j_counter;
+							} 
+							
+							j_counter++;
+						}
+						for (j = 0; j <= buf_pos; ++j)
+						{
+							if (buf[j] <= min_hash)
+							{
+								min_hash = buf[j];
+								min_strand = kmer_strand_buf[j];
+								min_pos = j;
+								min_loc = i - w_len + 1 + j_counter;
+							}
+
+							j_counter++;
+						}
+					}
+
+					min_flag = 0;
+					if(i_new>=kmer_len-1)
+					{
+						if (++buf_pos == w_len) buf_pos = 0; // if buffer is full overwrite the oldest kmer
+					}
+					
+				}
+			}
+
+			// if(!contains_N && (w_len + kmer_len - 1) <= seq_size ){
+			if((i_new >= w_len + kmer_len -1) && (w_len + kmer_len - 1) <= seq_size && min_hash != UINT64_MAX){
+
+				// adding the last minimizer in the read
+
+				if(min_strand == 0){
+					current_signature.insert(seq + min_loc - kmer_len + 1);
+					bin_no = s_mapper->get_bin_id(current_signature.get());
+					bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
+				}
+				else{
+					for(uint32_t rev_i = 0; rev_i < signature_len; rev_i++){
+						rev[rev_i] = 3 - (int)seq[min_loc - rev_i];
+					}
+					
+					current_signature.insert(rev);
+					bin_no = s_mapper->get_bin_id(current_signature.get());
+					bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
 				}
 
-				min_flag = 0;
-				if(i_new>=kmer_len-1)
-				{
-					if (++buf_pos == w_len) buf_pos = 0; // if buffer is full overwrite the oldest kmer
-				}
-				
 			}
 		}
 
-		// if(!contains_N && (w_len + kmer_len - 1) <= seq_size ){
-		if((i_new >= w_len + kmer_len -1) && (w_len + kmer_len - 1) <= seq_size && min_hash != UINT64_MAX){
+		pmm_reads->free(seq);
+		pmm_reads->free(rev);
 
-			// adding the last minimizer in the read
-
-			if(min_strand == 0){
-				current_signature.insert(seq + min_loc - kmer_len + 1);
-				bin_no = s_mapper->get_bin_id(current_signature.get());
-				bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
-			}
-			else{
-				for(uint32_t rev_i = 0; rev_i < signature_len; rev_i++){
-					rev[rev_i] = 3 - (int)seq[min_loc - rev_i];
-				}
-				
-				current_signature.insert(rev);
-				bin_no = s_mapper->get_bin_id(current_signature.get());
-				bins[bin_no]->PutExtendedKmer(seq + min_loc - kmer_len + 1, kmer_len);
-			}
-
-		}
-	}
-
-	pmm_reads->free(seq);
-	pmm_reads->free(rev);
-
-	return true;
+		return true;
 
 	}
 
@@ -1070,11 +1069,11 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	////////////////////////////////// UNIVERSE MINIMIZERS /////////////////////////
 	////////////////////////////////////////////////////////////////////////////////
 
-	else
+	else // universe minimizers
 	{
 
 	// ADDED VARIABLES
-	float delta = 0.03; // Density Parameter
+	float delta = delta_val;// 0.03; // Density Parameter
 	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
 	uint64_t kmer_int = 0; // Integer representation of a kmer
 	uint64_t rcm_kmer_int = 0; // Integer representation for the reverse complement of a kmer

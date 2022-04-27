@@ -197,13 +197,29 @@ namespace KMC
 		this->kmerLen = kmerLen;
 		return *this;
 	}
-	Stage1Params& Stage1Params::SetWindowLen(uint32_t windowLen) // Souvadra's addition
+	Stage1Params& Stage1Params::SetMinimizerVer(uint32_t minVer)
+	{
+		this->minVer = minVer;
+		return *this;
+	}
+	Stage1Params& Stage1Params::SetDelta(double delta)
+	{
+		if ((delta < 0.0) || (delta > 1.0))
+		{
+			std::ostringstream err_msg;
+			err_msg << "Wrong parameter: delta parameter must be within 0 and 1";
+			throw std::runtime_error(err_msg.str());
+		}
+		this->delta = delta;
+		return *this;
+	}
+	Stage1Params& Stage1Params::SetWindowLen(uint32_t windowLen)
 	{
 		if (windowLen < 1) 
 		{
 			std::ostringstream err_msg;
 			err_msg << "Wrong parameter: window must be greater than 0"; // need to generalize later
-			throw std::runtime_error(err_msg.str());;
+			throw std::runtime_error(err_msg.str());
 		}
 		this->windowLen = windowLen;
 		return *this;

@@ -46,6 +46,8 @@ class CSplitter
 	uint32_t curr_read_len = 0;
 
 	uint32 kmer_len;
+	uint32 minimizerVersion;
+	uint32 delta_val;
 	uint32 window_len; // Souvadra's addition
 	//uint32 prefix_len;
 	uint32 signature_len;
@@ -163,6 +165,8 @@ template <typename COUNTER_TYPE> class CWSmallKSplitter {
 	uint64 n_reads;
 	uint64 total_kmers;
 	uint32 kmer_len;
+	uint32 minimizerVersion;
+	uint32 delta_val;
 	uint32 window_len; 
 public:
 	CWSmallKSplitter(CKMCParams &Params, CKMCQueues &Queues);
