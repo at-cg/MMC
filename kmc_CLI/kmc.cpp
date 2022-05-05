@@ -130,7 +130,7 @@ bool parse_parameters(int argc, char* argv[], Params& params)
             stage1Params.SetKmerLen(atoi(&argv[i][2]));
         }
 		// minimizer version
-		else if (strncmp(argv[1], "-ver", 4) == 0)
+		else if (strncmp(argv[i], "-ver", 4) == 0)
 		{
 			stage1Params.SetMinimizerVer(atoi(&argv[i][4]));
 			printf("Minimizer Version Number is: %d \n", atoi(&argv[i][4]));
@@ -139,7 +139,7 @@ bool parse_parameters(int argc, char* argv[], Params& params)
 		else if ( (stage1Params.GetMinimizerVer() == 1) && (strncmp(argv[i], "-wv", 3) == 0) ) 
 		{
 			stage1Params.SetWindowLen(atoi(&argv[i][3]));
-			//printf("window length is %d \n", atoi(&argv[i][3])); // Souvadra
+			printf("window length is %d \n", atoi(&argv[i][3])); // Souvadra
 		}
 		// delta parameter 
 		else if ( (stage1Params.GetMinimizerVer() == 2) && (strncmp(argv[i], "-dl", 3) == 0) ) 
