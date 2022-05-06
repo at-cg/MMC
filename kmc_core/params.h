@@ -81,6 +81,8 @@ struct CKMCParams {
 
 	int kmer_len;			// kmer length
 	int window_len; 		// window length // Souvadra's addition
+	double delta_val;       // delta value 
+	int minimizerVersion;   // minimizer version 
 	int signature_len;
 	int cutoff_min;			// exclude k-mers occurring less than times
 	int64 cutoff_max;			// exclude k-mers occurring more than times

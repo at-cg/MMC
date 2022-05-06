@@ -116,7 +116,7 @@ namespace KMC
 		std::vector<std::string> inputFiles;
 		std::string tmpPath = ".";
 		uint32_t kmerLen = 25;
-		uint32_t minVer = 1;
+		uint32_t minVer = 0;
 		double delta = 0.2;
 		uint32_t windowLen = 0; // Souvadra
 		uint32_t nThreads = std::thread::hardware_concurrency();

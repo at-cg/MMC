@@ -33,7 +33,7 @@ void usage()
 		<< "Options:\n"
 		<< "  -v - verbose mode (shows all parameter settings); default: false\n"
 		<< "  -k<len> - k-mer length (k from " << KMC::CfgConsts::min_k<< " to " << KMC::CfgConsts::max_k << "; default: 25)\n"
-		<< "  -ver<version> - '1' for (w,k)-minimizers and '2' for universe-minimizers.; default: 1\n"
+		<< "  -ver<version> - '1' for (w,k)-minimizers and '2' for universe-minimizers.\n"
 		<< "  -dl<delta> - frequency of k-mers to be sampled as minimizer {for universe-minimizers}; default: 0.2\n"
 		<< "  -wv<len> - window length {for (w,k)-minimizers}; default: length of k-mer\n"  
 		<< "  -m<size> - max amount of RAM in GB (from 1 to 1024); default: 12\n"
@@ -133,7 +133,7 @@ bool parse_parameters(int argc, char* argv[], Params& params)
 		else if (strncmp(argv[i], "-ver", 4) == 0)
 		{
 			stage1Params.SetMinimizerVer(atoi(&argv[i][4]));
-			printf("Minimizer Version Number is: %d \n", atoi(&argv[i][4]));
+			printf("Minimizer Version Number is: %d \n", stage1Params.GetMinimizerVer());
 		}
 		// window length 
 		else if ( (stage1Params.GetMinimizerVer() == 1) && (strncmp(argv[i], "-wv", 3) == 0) ) 

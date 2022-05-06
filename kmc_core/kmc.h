@@ -108,12 +108,14 @@ public:
 //----------------------------------------------------------------------------------
 template <unsigned SIZE> CKMC<SIZE>::CKMC()
 {
-	initialized   = false;
-	Params.kmer_len      = 0;
-	Params.window_len 	 = 0; // Souvadra
-	Params.n_readers     = 1;
-	Params.n_splitters   = 1;
-	Params.n_sorters     = 1;
+	initialized   			= false;
+	Params.kmer_len      	= 0;
+	Params.minimizerVersion = 0;
+	Params.delta_val  		= 0.3;
+	Params.window_len 	 	= 0; // Souvadra
+	Params.n_readers     	= 1;
+	Params.n_splitters   	= 1;
+	Params.n_sorters     	= 1;
 }
 
 //----------------------------------------------------------------------------------
@@ -128,6 +130,8 @@ template <unsigned SIZE> void CKMC<SIZE>::SetParamsStage1(const KMC::Stage1Param
 	Params.input_file_names = stage1Params.GetInputFiles();
 	Params.working_directory = stage1Params.GetTmpPath();
 	Params.kmer_len = stage1Params.GetKmerLen();
+	Params.delta_val = stage1Params.GetDelta();
+	Params.minimizerVersion = stage1Params.GetMinimizerVer();
 	Params.window_len = stage1Params.GetWindowLen(); // Souvadra's addition
 	Params.file_type = stage1Params.GetInputFileType();
 	Params.n_bins = stage1Params.GetNBins();
@@ -552,6 +556,8 @@ template <unsigned SIZE> void CKMC<SIZE>::ShowSettingsStage1()
 	}
 	ostr << "\n";
 	ostr << "k-mer length                 : " << Params.kmer_len << "\n";
+	ostr << "minimizer version            : " << Params.minimizerVersion << "\n";
+	ostr << "delta value                  : " << Params.delta_val << "\n";
 	ostr << "window length				  : " << Params.window_len << "\n"; // Souvadra 
 	ostr << "Max. k-mer length            : " << MAX_K << "\n";
 	ostr << "Signature length             : " << Params.signature_len << "\n";
@@ -650,6 +656,8 @@ template <unsigned SIZE> void CKMC<SIZE>::ShowSettingsSmallKOpt()
 
 	ostr << "\n";
 	ostr << "k-mer length                 : " << Params.kmer_len << "\n";
+	ostr << "minimizer version            : " << Params.minimizerVersion << "\n";
+	ostr << "delta value                  : " << Params.delta_val << "\n";
 	ostr << "window length                : " << Params.window_len << "\n";
 	ostr << "Max. k-mer length            : " << MAX_K << "\n";
 	ostr << "Min. count threshold         : " << Params.cutoff_min << "\n";

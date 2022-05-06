@@ -31,6 +31,8 @@ CSplitter::CSplitter(CKMCParams &Params, CKMCQueues &Queues)
 	pmm_reads = Queues.pmm_reads.get();
 	kmer_len = Params.kmer_len;
 	window_len = Params.window_len;
+	minimizerVersion = Params.minimizerVersion;
+	delta_val = Params.delta_val;
 	signature_len = Params.signature_len;
 
 	mem_part_pmm_bins = Params.mem_part_pmm_bins;
@@ -447,13 +449,13 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 	CMmer current_signature(signature_len);
 	uint32 i;
 
-	uint32_t minimizer_type = 1; // 0 is for window and 1 is for universe minimizers
+	uint32_t minimizer_type = minimizerVersion; // 1 is for window and 2 is for universe minimizers
 
 	////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////// WINDOW MINIMIZERS ///////////////////////////
 	////////////////////////////////////////////////////////////////////////////////
 
-	if(minimizer_type == 0)
+	if(minimizer_type == 1)
 	{
 		
 	// ADDED VARIABLES
@@ -696,7 +698,7 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 	{
 	
 	// ADDED VARIABLES
-	float delta = delta_val; // 0.03; // Density Parameter
+	double delta = delta_val; // 0.03; // Density Parameter
 	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
 	uint64_t kmer_int = 0; // Integer representation of a kmer
 	uint64_t rcm_kmer_int = 0; // Integer representation for the reverse complement of a kmer
@@ -813,7 +815,9 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	uint32 i;
 
 	uint32_t minimizer_type = minimizerVersion; // 1 is for window and 2 is for universe minimizers
-
+	std::cout << "minimizer_type -> " << minimizer_type << std::endl;
+	std::cout << "w_len -> " << window_len << std::endl;
+	std::cout << "delta -> " << delta_val << std::endl;
 
 	////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////// WINDOW MINIMIZERS ///////////////////////////
@@ -1073,7 +1077,7 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	{
 
 	// ADDED VARIABLES
-	float delta = delta_val;// 0.03; // Density Parameter
+	double delta = delta_val;// 0.03; // Density Parameter
 	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
 	uint64_t kmer_int = 0; // Integer representation of a kmer
 	uint64_t rcm_kmer_int = 0; // Integer representation for the reverse complement of a kmer
@@ -1427,6 +1431,8 @@ template <typename COUNTER_TYPE> CWSmallKSplitter<COUNTER_TYPE>::CWSmallKSplitte
 	pmm_fastq = Queues.pmm_fastq.get();
 	pmm_small_k = Queues.pmm_small_k_buf.get();
 	kmer_len = Params.kmer_len;
+	minimizerVersion = Params.minimizerVersion;
+	delta_val = Params.delta_val;
 	window_len = Params.window_len; // Souvadra's addition
 	spl = std::make_unique<CSplitter>(Params, Queues);
 }
