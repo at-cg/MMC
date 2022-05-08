@@ -815,9 +815,9 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	uint32 i;
 
 	uint32_t minimizer_type = minimizerVersion; // 1 is for window and 2 is for universe minimizers
-	std::cout << "minimizer_type -> " << minimizer_type << std::endl;
-	std::cout << "w_len -> " << window_len << std::endl;
-	std::cout << "delta -> " << delta_val << std::endl;
+	//std::cout << "minimizer_type -> " << minimizer_type << std::endl;
+	//std::cout << "w_len -> " << window_len << std::endl;
+	//std::cout << "delta -> " << delta_val << std::endl;
 
 	////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////// WINDOW MINIMIZERS ///////////////////////////

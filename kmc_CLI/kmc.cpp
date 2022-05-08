@@ -133,19 +133,19 @@ bool parse_parameters(int argc, char* argv[], Params& params)
 		else if (strncmp(argv[i], "-ver", 4) == 0)
 		{
 			stage1Params.SetMinimizerVer(atoi(&argv[i][4]));
-			printf("Minimizer Version Number is: %d \n", stage1Params.GetMinimizerVer());
+			//printf("Minimizer Version Number is: %d \n", stage1Params.GetMinimizerVer());
 		}
 		// window length 
 		else if ( (stage1Params.GetMinimizerVer() == 1) && (strncmp(argv[i], "-wv", 3) == 0) ) 
 		{
 			stage1Params.SetWindowLen(atoi(&argv[i][3]));
-			printf("window length is %d \n", atoi(&argv[i][3])); // Souvadra
+			//printf("window length is %d \n", atoi(&argv[i][3])); // Souvadra
 		}
 		// delta parameter 
 		else if ( (stage1Params.GetMinimizerVer() == 2) && (strncmp(argv[i], "-dl", 3) == 0) ) 
 		{
 			stage1Params.SetDelta(atof(&argv[i][3])); 
-			printf("delta parameter is: %f \n", atof(&argv[i][3]));
+			//printf("delta parameter is: %f \n", atof(&argv[i][3]));
 		}
 		// Memory limit
 		else if (strncmp(argv[i], "-m", 2) == 0)
