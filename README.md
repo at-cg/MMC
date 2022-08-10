@@ -1,11 +1,7 @@
 MMC
 =
-MMC is an open-source program for parallel disk-based counting of (w,k)-minimizers from (possibly gzipped) FASTQ/FASTA files. Given parameters k and w (default w = k), MMC samples minimizers and computes their frequency in a fast and memory efficient manner. Many applications (such as GWAS, de novo genome size estimation, etc.) that require count of all k-mers in a given sequencing dataset, can be performed using a fraction of time and memory by using only the minimizer statistics. MMC has been built on top of [KMC3](https://github.com/refresh-bio/KMC).
+MMC is an open-source program for parallel disk-based counting of (w,k)-minimizers and (k,δ) from (possibly gzipped) FASTQ/FASTA files. Given parameters k, and w (default w = k) or δ (default δ = 0.2),  MMC samples minimizers and computes their frequency in a fast and memory efficient manner. Many applications (such as GWAS, de novo genome size estimation, etc.) that require counts of all k-mers in a given sequencing dataset, can be performed using a fraction of time and memory by using only the minimizer statistics. MMC has been built on top of [KMC3](https://github.com/refresh-bio/KMC).
 
-Benchmark
-=
-![image](https://user-images.githubusercontent.com/40889593/141755297-d2ff9e99-7d01-4c3c-9541-fbd316e2168c.png)
-We have benchmarked MMC with two commonly used tools for counting k-mers using [publicly available human datasets](https://www.ncbi.nlm.nih.gov/sra/?term=SRR3189742). Our experiments show that counting (w,k)-minimizers using MMC is around 2x faster than KMC3 and 10x faster than Jelllyfish2 (JF2). MMC is also 2x space efficient compared to KMC3. But the best part about using MMC is that it makes downstream applications run significantly faster in minimizer-space compared to using all k-mer counts.
 
 Installation
 =
@@ -24,16 +20,75 @@ After compilation you will obtain the following binaries:
 * bin/mmc_dump - the program listing minimizers in a database produced by mmc
 * bin/mmc_tools - the program allowing to manipulate mmc databases (set operations, transformations, etc.)
 
-Other scripts
+Usage
 =
-The scripts folder contains:
-* bc_script.cpp - the script to compute Bray-Curtis dissimilarity between two metagenomes.
 
-Usage: 
 ```sh
-g++ bcscript.cpp -o main && ./main <input1> <input2>
+ mmc [options] <input_file_name> <output_file_name> <working_directory>
+ mmc [options] <@input_file_names> <output_file_name> <working_directory>
 ```
 
+### Important Options: 
+
+```sh
+
+  -k<len> - k-mer length (k from 1 to 32; default: 25)
+
+  -ver<version> - '1' for (w,k)-minimizers and '2' for universe-minimizers.
+
+  -dl<delta> - frequency of k-mers to be sampled as minimizer {for universe-minimizers}; default: 0.2
+
+  -wv<len> - window length {for (w,k)-minimizers}; default: length of k-mer
+
+  -m<size> - max amount of RAM in GB (from 1 to 1024); default: 12
+
+  -p<par> - signature length (5, 6, 7, 8, 9, 10, 11); default: 9
+
+  -f<a/q/m/bam/kmc> - input in FASTA format (-fa), FASTQ format (-fq), multi FASTA (-fm) or BAM (-fbam) or KMC(-fkmc); default: FASTQ
+
+  -ci<value> - exclude minimizers occurring less than <value> times (default: 2)
+
+  -cs<value> - maximal value of a counter (default: 255)
+
+  -cx<value> - exclude minimizers occurring more of than <value> times (default: 1e9)
+
+  -t<value> - total number of threads (default: no. of CPU cores)
+
+  -e - only estimate histogram of k-mers occurrences instead of exact k-mer counting
+
+```
+ 
+Example
+=
+To get the counts of (w,k)-minimizers in a dataset:
+
+```sh
+mmc -p9 -t16 -k21 -ver1 -wv21 -ci0 -r -cx1000000000 -cs100000000 -hp -fq -m64 @input.lst output output_directory
+```
+
+To get the counts of (k,δ)-minimizers in a dataset:
+
+```sh
+mmc -p9 -t16 -k21 -ver2 -dl0.00390625 -ci0 -r -cx1000000000 -cs100000000 -hp -fq -m64 @input.lst output output_directory
+```
+
+To peform Genome Size Estimation by Minimizers using Genomescope, we need to transform the counts obtained in a form readable by Genomescope:
+
+```sh
+mmc_tools transform input histogram /dev/stdout -ci1 -cx3000000 -cs100000000 | awk ‘{if ($2 >0) print $1, $2}’ > output.histo
+```
+
+Finally run Genomscope on the obtained histogram:
+
+```sh
+Rscript genomescope.R output.histo k_size read_length output_directory
+```
+
+Benchmark
+=
+<img src="./results_plot.png" width="500">
+
+(k, δ)-MMC, is nearly 4.5× faster and uses 21× lesser memory comapared to KMC3. By using minimizer counts instead of all k-mer counts, downstream applications run significantly faster while maintaining  near-identical output as was shown through the task of Genome size estimation, where (k, δ)-MMC robustly estimated the genome size with just about 1% error using expected density δ =1/256. Even compared to approximate k-mer counters like ntCard, KmerEstimate and KMC3 -e flag, MMC performs better in both speed and accuracy.
 
 License
 =
