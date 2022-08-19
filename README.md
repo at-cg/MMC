@@ -83,6 +83,26 @@ Finally run Genomscope on the obtained histogram:
 ```sh
 Rscript genomescope.R output.histo k_size read_length output_directory
 ```
+Sample GSE application
+=
+
+1) Download a sample read set for any organism. For example, download the FASTQ file for Escherichia coli (SRR15334628) <a href="https://trace.ncbi.nlm.nih.gov/Traces/index.html?view=run_browser&acc=SRR15334628&display=download">here</a>.
+
+2) Extract the dataset
+
+3) Use the following commands:
+
+```
+mmc -ver2 -dl0.00390625 -p9 -t1 -k21 -ci0 -cs1000000000 -fq <input_file> output .
+
+mmc_tools transform output histogram output.histo -ci1 -cx3000000 -cs100000000
+
+cat output.histo | awk '{if ($2 >0) print $1, $2}' > final_output.histo
+```
+4) Upload the final_output.histo file to <a href="http://qb.cshl.edu/genomescope/">Genomescope</a> with the following parameters:
+Kmer length = 21, Read length = 250, Max kmer coverage =  3000000
+
+5) Multiply the Genomescope output returned with 1/delta (here delta = 0.00390625, therefore 1/delta = 256) to get the estimated genome size.
 
 Benchmark
 =
