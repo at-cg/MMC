@@ -1,6 +1,6 @@
 MMC
 =
-MMC is an open-source program for parallel disk-based counting of (w,k)-minimizers and (k,δ) from (possibly gzipped) FASTQ/FASTA files. Given parameters k, and w (default w = k) or δ (default δ = 0.2),  MMC samples minimizers and computes their frequency in a fast and memory efficient manner. Many applications (such as GWAS, de novo genome size estimation, etc.) that require counts of all k-mers in a given sequencing dataset, can be performed using a fraction of time and memory by using only the minimizer statistics. MMC has been built on top of [KMC3](https://github.com/refresh-bio/KMC).
+MMC is an open-source program for parallel disk-based counting of (w,k)-minimizers and (k,δ)-minimizers from (possibly gzipped) FASTQ/FASTA files. Given parameters k, and w (default w = k) or δ (default δ = 0.2),  MMC samples minimizers and computes their frequency in a fast and memory efficient manner. Many applications (such as GWAS, de novo genome size estimation, etc.) that require counts of all k-mers in a given sequencing dataset, can be performed using a fraction of time and memory by using only the minimizer statistics. MMC has been built on top of [KMC3](https://github.com/refresh-bio/KMC).
 
 
 Installation
@@ -54,8 +54,6 @@ Usage
 
   -t<value> - total number of threads (default: no. of CPU cores)
 
-  -e - only estimate histogram of k-mers occurrences instead of exact k-mer counting
-
 ```
  
 Example
@@ -63,27 +61,27 @@ Example
 To get the counts of (w,k)-minimizers in a dataset:
 
 ```sh
-mmc -p9 -t16 -k21 -ver1 -wv21 -ci0 -r -cx1000000000 -cs100000000 -hp -fq -m64 @input.lst output output_directory
+mmc -p9 -t16 -k21 -ver1 -wv21 -ci0 -r -cx1000000000 -cs100000000 -hp -fq -m64 input.fastq output <output_directory>
 ```
 
 To get the counts of (k,δ)-minimizers in a dataset:
 
 ```sh
-mmc -p9 -t16 -k21 -ver2 -dl0.00390625 -ci0 -r -cx1000000000 -cs100000000 -hp -fq -m64 @input.lst output output_directory
+mmc -p9 -t16 -k21 -ver2 -dl0.00390625 -ci0 -r -cx1000000000 -cs100000000 -hp -fq -m64 input.fastq output <output_directory>
 ```
 
-To peform Genome Size Estimation by Minimizers using Genomescope, we need to transform the counts obtained in a form readable by Genomescope:
+To peform genome size estimation from minimizer counts by using [Genomescope](https://github.com/schatzlab/genomescope), we need to transform the counts obtained in a form readable by Genomescope:
 
 ```sh
-mmc_tools transform input histogram /dev/stdout -ci1 -cx3000000 -cs100000000 | awk ‘{if ($2 >0) print $1, $2}’ > output.histo
+mmc_tools transform output histogram /dev/stdout -ci0 -cx3000000 -cs100000000 | awk ‘{if ($2 >0) print $1, $2}’ > output.histo
 ```
 
 Finally run Genomscope on the obtained histogram:
 
 ```sh
-Rscript genomescope.R output.histo k_size read_length output_directory
+Rscript genomescope.R output.histo <k_size> <read_length> <output_directory>
 ```
-Sample GSE application
+Demo
 =
 
 1) Download a sample read set for any organism. For example, download the FASTQ file for Escherichia coli (SRR15334628) <a href="https://trace.ncbi.nlm.nih.gov/Traces/index.html?view=run_browser&acc=SRR15334628&display=download">here</a>.
@@ -95,11 +93,11 @@ Sample GSE application
 ```
 mmc -ver2 -dl0.00390625 -p9 -t1 -k21 -ci0 -cs1000000000 -fq <input_file> output .
 
-mmc_tools transform output histogram output.histo -ci1 -cx3000000 -cs100000000
+mmc_tools transform output histogram output.histo -ci0 -cx3000000 -cs100000000
 
 cat output.histo | awk '{if ($2 >0) print $1, $2}' > final_output.histo
 ```
-4) Upload the final_output.histo file to <a href="http://qb.cshl.edu/genomescope/">Genomescope</a> with the following parameters:
+4) Upload the final_output.histo file to [Genomescope](http://qb.cshl.edu/genomescope) with the following parameters:
 Kmer length = 21, Read length = 250, Max kmer coverage =  3000000
 
 5) Multiply the Genomescope output returned with 1/delta (here delta = 0.00390625, therefore 1/delta = 256) to get the estimated genome size.
