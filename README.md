@@ -36,7 +36,7 @@ Usage
 
   -ver<version> - '1' for (w,k)-minimizers and '2' for universe-minimizers.
 
-  -dl<delta> - frequency of k-mers to be sampled as minimizer {for universe-minimizers}; default: 0.2
+  -d<invdelta> - inverse of k-mer sampling density, i.e., inverse of delta {for universe-minimizers}; default: 5
 
   -wv<len> - window length {for (w,k)-minimizers}; default: length of k-mer
 
@@ -67,7 +67,7 @@ mmc -p9 -t16 -k21 -ver1 -wv21 -ci0 -r -cx1000000000 -cs100000000 -hp -fq -m64 in
 To get the counts of (k,δ)-minimizers in a dataset:
 
 ```sh
-mmc -p9 -t16 -k21 -ver2 -dl0.00390625 -ci0 -r -cx1000000000 -cs100000000 -hp -fq -m64 input.fastq output <output_directory>
+mmc -p9 -t16 -k21 -ver2 -d256 -ci0 -r -cx1000000000 -cs100000000 -hp -fq -m64 input.fastq output <output_directory>
 ```
 
 To peform genome size estimation from minimizer counts by using [Genomescope](https://github.com/schatzlab/genomescope), we need to transform the counts obtained in a form readable by Genomescope:
@@ -91,7 +91,7 @@ Demo
 3) Use the following commands:
 
 ```
-mmc -ver2 -dl0.00390625 -p9 -t1 -k21 -ci0 -cs1000000000 -fq <input_file> output .
+mmc -ver2 -d256 -p9 -t1 -k21 -ci0 -cs1000000000 -fq <input_file> output .
 
 mmc_tools transform output histogram output.histo -ci0 -cx3000000 -cs100000000
 
