@@ -61,19 +61,19 @@ Example
 To get the counts of (w,k)-minimizers in a dataset:
 
 ```sh
-mmc -p9 -t16 -k21 -ver1 -wv21 -ci0 -r -cx1000000000 -cs100000000 -hp -fq -m64 input.fastq output <output_directory>
+mmc -p9 -t16 -k21 -ver1 -wv21 -ci1 -r -cx1000000000 -cs100000000 -hp -fq -m64 input.fastq output <output_directory>
 ```
 
 To get the counts of (k,δ)-minimizers in a dataset:
 
 ```sh
-mmc -p9 -t16 -k21 -ver2 -d256 -ci0 -r -cx1000000000 -cs100000000 -hp -fq -m64 input.fastq output <output_directory>
+mmc -p9 -t16 -k21 -ver2 -d256 -ci1 -r -cx1000000000 -cs100000000 -hp -fq -m64 input.fastq output <output_directory>
 ```
 
 To peform genome size estimation from minimizer counts by using [Genomescope](https://github.com/schatzlab/genomescope), we need to transform the counts obtained in a form readable by Genomescope:
 
 ```sh
-mmc_tools transform output histogram /dev/stdout -ci0 -cx3000000 -cs100000000 | awk ‘{if ($2 >0) print $1, $2}’ > output.histo
+mmc_tools transform output histogram /dev/stdout -ci1 -cx3000000 -cs100000000 | awk ‘{if ($2 >0) print $1, $2}’ > output.histo
 ```
 
 Finally run Genomscope on the obtained histogram:
@@ -91,9 +91,9 @@ Demo
 3) Use the following commands:
 
 ```
-mmc -ver2 -d256 -p9 -t1 -k21 -ci0 -cs1000000000 -fq <input_file> output .
+mmc -ver2 -d256 -p9 -t1 -k21 -ci1 -cs1000000000 -fq <input_file> output .
 
-mmc_tools transform output histogram output.histo -ci0 -cx3000000 -cs100000000
+mmc_tools transform output histogram output.histo -ci1 -cx3000000 -cs100000000
 
 cat output.histo | awk '{if ($2 >0) print $1, $2}' > final_output.histo
 ```
