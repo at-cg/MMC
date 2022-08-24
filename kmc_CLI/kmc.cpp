@@ -34,7 +34,8 @@ void usage()
 		<< "  -v - verbose mode (shows all parameter settings); default: false\n"
 		<< "  -k<len> - k-mer length (k from " << KMC::CfgConsts::min_k<< " to " << KMC::CfgConsts::max_k << "; default: 25)\n"
 		<< "  -ver<version> - '1' for (w,k)-minimizers and '2' for universe-minimizers.\n"
-		<< "  -dl<delta> - frequency of k-mers to be sampled as minimizer {for universe-minimizers}; default: 0.2\n"
+		<< "  -d<invdelta> - inverse of k-mer sampling density, i.e., inverse of delta {for universe-minimizers}; default: 5\n"
+		// << "  -dl<delta> - frequency of k-mers to be sampled as minimizer {for universe-minimizers}; default: 0.2\n"
 		<< "  -wv<len> - window length {for (w,k)-minimizers}; default: length of k-mer\n"  
 		<< "  -m<size> - max amount of RAM in GB (from 1 to 1024); default: 12\n"
 		<< "  -sm - use strict memory mode (memory limit from -m<n> switch will not be exceeded)\n"
@@ -142,9 +143,9 @@ bool parse_parameters(int argc, char* argv[], Params& params)
 			//printf("window length is %d \n", atoi(&argv[i][3])); // Souvadra
 		}
 		// delta parameter 
-		else if ( (stage1Params.GetMinimizerVer() == 2) && (strncmp(argv[i], "-dl", 3) == 0) ) 
+		else if ( (stage1Params.GetMinimizerVer() == 2) && (strncmp(argv[i], "-d", 2) == 0) ) 
 		{
-			stage1Params.SetDelta(atof(&argv[i][3])); 
+			stage1Params.SetDelta(atof(&argv[i][2])); 
 			//printf("delta parameter is: %f \n", atof(&argv[i][3]));
 		}
 		// Memory limit

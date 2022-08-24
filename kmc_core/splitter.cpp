@@ -698,7 +698,7 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 	{
 	
 	// ADDED VARIABLES
-	double delta = delta_val; // 0.03; // Density Parameter
+	double delta = 1/delta_val; // Density Parameter
 	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
 	uint64_t kmer_int = 0; // Integer representation of a kmer
 	uint64_t rcm_kmer_int = 0; // Integer representation for the reverse complement of a kmer
@@ -1077,7 +1077,7 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	{
 
 	// ADDED VARIABLES
-	double delta = delta_val;// 0.03; // Density Parameter
+	double delta = 1/delta_val; // Density Parameter
 	uint32_t canonical_flag = 1; // 1 for canonical mode and 0 for forward strand only
 	uint64_t kmer_int = 0; // Integer representation of a kmer
 	uint64_t rcm_kmer_int = 0; // Integer representation for the reverse complement of a kmer

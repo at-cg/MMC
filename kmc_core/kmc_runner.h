@@ -117,7 +117,7 @@ namespace KMC
 		std::string tmpPath = ".";
 		uint32_t kmerLen = 25;
 		uint32_t minVer = 0;
-		double delta = 0.2;
+		double delta = 5;
 		uint32_t windowLen = 0; // Souvadra
 		uint32_t nThreads = std::thread::hardware_concurrency();
 		uint32_t maxRamGB = 12;

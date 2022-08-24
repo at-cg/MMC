@@ -204,10 +204,10 @@ namespace KMC
 	}
 	Stage1Params& Stage1Params::SetDelta(double delta)
 	{
-		if ((delta < 0.0) || (delta > 1.0))
+		if ((delta < 0.0) || (delta < 1.0))
 		{
 			std::ostringstream err_msg;
-			err_msg << "Wrong parameter: delta parameter must be within 0 and 1";
+			err_msg << "Wrong parameter: inverse of delta parameter must be positive and >=1";
 			throw std::runtime_error(err_msg.str());
 		}
 		this->delta = delta;
