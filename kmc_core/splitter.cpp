@@ -706,6 +706,7 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 	uint64_t kmer_strand = 0; // 1 if the kmer was from the reverse strand and 0 otherwise
 	uint64_t mask1 = (1ULL<<2 * kmer_len) - 1; // Mask to keep the kmer_int values in range
 	if (kmer_len == 32) {mask1 = std::numeric_limits<uint64_t>::max();}
+	double del_threshold = delta*mask1;
   	uint64_t shift1 = 2 * (kmer_len-1);
 	uint64_t kmer_hash = UINT64_MAX; // Stores the hash value of the kmer formed
 	char *rev; // stores the reverse complement of a kmer
@@ -753,7 +754,7 @@ void CSplitter::CalcStats(uchar* _part, uint64 _part_size, ReadType read_type, u
 					// // kmer_hash = hash64(can_int, mask1);
 
 					
-					if(kmer_hash <= delta*mask1)
+					if(kmer_hash <= del_threshold)
 					{
 						if(kmer_strand == 0){
 							current_signature.insert(seq + i - kmer_len + 1);
@@ -1085,6 +1086,7 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 	uint64_t kmer_strand = 0; // 1 if the kmer was from the reverse strand and 0 otherwise
 	uint64_t mask1 = (1ULL<<2 * kmer_len) - 1; // Mask to keep the kmer_int values in range
 	if (kmer_len == 32) {mask1 = std::numeric_limits<uint64_t>::max();}
+	double del_threshold = delta*mask1;
   	uint64_t shift1 = 2 * (kmer_len-1);
 	uint64_t kmer_hash = UINT64_MAX; // Stores the hash value of the kmer formed
 	char *rev; // stores the reverse complement of a kmer
@@ -1136,7 +1138,7 @@ bool CSplitter::ProcessReads(uchar *_part, uint64 _part_size, ReadType read_type
 					kmer_hash = hash64(can_int, mask1);
 
 
-					if(kmer_hash <= delta*mask1)
+					if(kmer_hash <= del_threshold)
 					{
 						
 						if(kmer_strand == 0){
