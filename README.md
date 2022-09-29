@@ -1,6 +1,6 @@
 MMC
 =
-MMC is an open-source program for parallel disk-based counting of (w,k)-minimizers and (k,δ) from (possibly gzipped) FASTQ/FASTA files. Given parameters k, and w (default w = k) or δ (default δ = 0.2),  MMC samples minimizers and computes their frequency in a fast and memory efficient manner. Many applications (such as GWAS, de novo genome size estimation, etc.) that require counts of all k-mers in a given sequencing dataset, can be performed using a fraction of time and memory by using only the minimizer statistics. MMC has been built on top of [KMC3](https://github.com/refresh-bio/KMC).
+MMC is an open-source program for parallel disk-based counting of window and universe minimizers from (possibly gzipped) FASTQ/FASTA files. Given parameters k, and w (default w = k) or δ (default δ = 0.2),  MMC samples minimizers and computes their frequency in a fast and memory efficient manner. Many applications (such as GWAS, de novo genome size estimation, etc.) that require counts of all k-mers in a given sequencing dataset, can be performed using a fraction of time and memory by using only the minimizer statistics. MMC has been built on top of [KMC3](https://github.com/refresh-bio/KMC).
 
 
 Installation
@@ -60,13 +60,13 @@ Usage
  
 Example
 =
-To get the counts of (w,k)-minimizers in a dataset:
+To get the counts of window minimizers in a dataset:
 
 ```sh
 mmc -p9 -t16 -k21 -ver1 -wv21 -ci0 -r -cx1000000000 -cs100000000 -hp -fq -m64 @input.lst output output_directory
 ```
 
-To get the counts of (k,δ)-minimizers in a dataset:
+To get the counts of universe minimizers in a dataset:
 
 ```sh
 mmc -p9 -t16 -k21 -ver2 -dl0.00390625 -ci0 -r -cx1000000000 -cs100000000 -hp -fq -m64 @input.lst output output_directory
@@ -108,7 +108,7 @@ Benchmark
 =
 <img src="./benchmark/result.png" width="500">
 
-(k, δ)-MMC, is nearly 4.7× faster and uses 22× lesser memory comapared to KMC3. By using minimizer counts instead of all k-mer counts, downstream applications run significantly faster while maintaining  near-identical output as was shown through the task of Genome size estimation, where (k, δ)-MMC robustly estimated the genome size 12.5x faster, with just about 1% error using expected density δ =1/256. Even compared to approximate k-mer counters like ntCard, KmerEstimate and KMC3 -e flag, MMC performs better in both speed and accuracy.
+Counting universe minimizers in MMC, is nearly 4.7× faster and uses 22× lesser memory comapared to KMC3. By using minimizer counts instead of all k-mer counts, downstream applications run significantly faster while maintaining  near-identical output as was shown through the task of Genome size estimation, where universe minimizers robustly estimated the genome size 12.5x faster, with just about 1% error using expected density δ =1/256. Even compared to approximate k-mer counters like ntCard, KmerEstimate and KMC3 -e flag, MMC performs better in both speed and accuracy.
 
 License
 =
