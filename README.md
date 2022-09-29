@@ -34,11 +34,11 @@ Usage
 
   -k<len> - k-mer length (k from 1 to 32; default: 25)
 
-  -ver<version> - '1' for (w,k)-minimizers and '2' for universe-minimizers.
+  -ver<version> - '1' for window minimizers and '2' for universe minimizers.
 
-  -dl<delta> - frequency of k-mers to be sampled as minimizer {for universe-minimizers}; default: 0.2
+  -dl<delta> - frequency of k-mers to be sampled as minimizer {for universe minimizers}; default: 0.2
 
-  -wv<len> - window length {for (w,k)-minimizers}; default: length of k-mer
+  -wv<len> - window length {for window minimizers}; default: length of k-mer
 
   -m<size> - max amount of RAM in GB (from 1 to 1024); default: 12
 
