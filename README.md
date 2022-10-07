@@ -1,6 +1,6 @@
 MMC
 =
-MMC is an open-source program for parallel disk-based counting of window and universe minimizers from (possibly gzipped) FASTQ/FASTA files. Given parameters k, and w (for window minimizers) or δ (for universe minimizers),  MMC samples minimizers and computes their frequency in a fast and memory efficient manner. Many applications that require counts of k-mers in a given sequencing dataset (such as GWAS, de novo genome size estimation, etc.), can be performed much faster in lesser memory, using only the minimizer statistics. MMC has been built on top of [KMC3](https://github.com/refresh-bio/KMC) using C++.
+MMC is an open-source program for parallel disk-based counting of minimizers from (possibly gzipped) FASTQ/FASTA files. MMC supports two minimizer techniques from which user can choose one. The first technique, called as [window minimizer](https://doi.org/10.1093/bioinformatics/bth408), provides window guarantee, i.e., there is at least one minimizer sampled in every substring of fixed length. In the second option, called as [universe minimizer](https://doi.org/10.1016/j.cels.2021.08.009), this guarantee is absent. Given parameters k and window length w (for window minimizers), or sampling density δ (for universe minimizers),  MMC samples minimizers and computes their frequency in a fast and memory-efficient manner. Many applications that require counts of k-mers in a raw sequencing dataset (such as [referencef-free GWAS](https://github.com/atifrahman/HAWK), de novo [genome profiling](https://github.com/schatzlab/genomescope), etc.), can be performed much faster in less memory, using only the minimizer count statistics. MMC has been built on top of [KMC3](https://github.com/refresh-bio/KMC).
 
 
 Installation
@@ -70,7 +70,7 @@ To get the counts of universe minimizers in a dataset:
 mmc -p9 -t16 -k21 -ver2 -d256 -ci1 -r -cx1000000000 -cs100000000 -hp -fq -m64 @input.lst output output_directory
 ```
 
-To peform Genome Size Estimation by Minimizers using Genomescope, we need to transform the counts obtained in a form readable by Genomescope:
+To peform genome profiling using Genomescope, we need to transform the minimizer counts obtained in a form readable by Genomescope:
 
 ```sh
 mmc_tools transform input histogram /dev/stdout -ci1 -cx3000000 -cs100000000 | awk ‘{if ($2 >0) print $1, $2}’ > output.histo
@@ -81,7 +81,7 @@ Finally run Genomscope on the obtained histogram:
 ```sh
 Rscript genomescope.R output.histo k_size read_length output_directory
 ```
-Sample GSE application
+Computing genome statistics using minimizer frequency histogram
 =
 
 1) Download a sample read set for any organism. For example, download the FASTQ file for Escherichia coli (SRR15334628) <a href="https://trace.ncbi.nlm.nih.gov/Traces/index.html?view=run_browser&acc=SRR15334628&display=download">here</a>.
@@ -100,7 +100,7 @@ cat output.histo | awk '{if ($2 >0) print $1, $2}' > final_output.histo
 4) Upload the final_output.histo file to <a href="http://qb.cshl.edu/genomescope/">Genomescope</a> with the following parameters:
 Kmer length = 21, Read length = 250, Max kmer coverage =  3000000
 
-5) Multiply the Genomescope output returned with invdelta (here 256) to get the estimated genome size.
+5) Multiply the Genomescope's estimated genome size with inverse of density δ (which is 256 here) to get the final estimated genome size.
 
 Benchmark
 =
