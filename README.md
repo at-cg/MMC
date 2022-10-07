@@ -105,7 +105,7 @@ Kmer length = 21, Read length = 250, Max kmer coverage =  3000000
 
 Benchmark
 =
-<img src="./benchmark/result.png" width="500">
+<img src="./benchmark/results.png" width="500">
 
 Counting universe minimizers in MMC, is nearly 5× faster and uses 22× lesser memory compared to KMC3. By using minimizer counts instead of all k-mer counts, downstream applications run significantly faster while maintaining  near-identical output as was shown through the task of de novo estimation of genome statistics, where universe minimizers estimated the genome size with just about 1% error using expected density δ =1/256. Even compared to approximate k-mer counters like ntCard, KmerEstimate and KMC3 -e flag, MMC performs better in both speed and accuracy.
 
