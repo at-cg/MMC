@@ -81,8 +81,8 @@ Finally run Genomscope on the obtained histogram:
 ```sh
 Rscript genomescope.R output.histo k_size read_length output_directory
 ```
-Computing genome statistics using minimizer frequency histogram
-=
+Applications
+One example of an application where minimizer counts can be useful is [reference-free genome profiling](https://doi.org/10.1093/bioinformatics/btx153). Genome profiling is routinely used as a preprocessing step of genome assembly, where the k-mer frequencies in raw sequencing reads are used to statistically estimate genome size, heterozygosity, and repeat content.
 
 1) Download a sample read set for any organism. For example, download the FASTQ file for Escherichia coli (SRR15334628) <a href="https://trace.ncbi.nlm.nih.gov/Traces/index.html?view=run_browser&acc=SRR15334628&display=download">here</a>.
 
